@@ -1,10 +1,12 @@
 package br.com.SmartMed.consultas.model;
 
+import br.com.SmartMed.consultas.rest.dto.ConsultaDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.dialect.Database;
+import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 
@@ -44,4 +46,9 @@ public class ConsultaModel {
 
     @Column(name = "recepcionistaID")
     private int recepcionistaID;
+
+    public ConsultaDTO toDTO(){
+        ModelMapper m = new ModelMapper();
+        return m.map(this, ConsultaDTO.class);
+    }
 }

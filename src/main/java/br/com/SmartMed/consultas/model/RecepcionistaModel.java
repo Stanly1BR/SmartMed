@@ -1,5 +1,6 @@
 package br.com.SmartMed.consultas.model;
 
+import br.com.SmartMed.consultas.rest.dto.RecepcionistaDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
+import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 
@@ -52,4 +54,9 @@ public class RecepcionistaModel {
 
     @Column(name = "ativo")
     private boolean ativo;
+
+    public RecepcionistaDTO toDTO(){
+        ModelMapper m = new ModelMapper();
+        return m.map(this, RecepcionistaDTO.class);
+    }
 }

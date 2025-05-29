@@ -1,5 +1,6 @@
 package br.com.SmartMed.consultas.model;
 
+import br.com.SmartMed.consultas.rest.dto.CovenioDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CNPJ;
+import org.modelmapper.ModelMapper;
 
 @Data
 @AllArgsConstructor
@@ -41,4 +43,9 @@ public class CovenioModel {
 
     @Column(name = "ativo")
     private boolean ativo;
+
+    public CovenioDTO toDTO(){
+        ModelMapper m = new ModelMapper();
+        return m.map(this, CovenioDTO.class);
+    }
 }

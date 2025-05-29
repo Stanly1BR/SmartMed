@@ -1,5 +1,6 @@
 package br.com.SmartMed.consultas.model;
 
+import br.com.SmartMed.consultas.rest.dto.MedicoDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.modelmapper.ModelMapper;
 
 @Data
 @Getter
@@ -49,4 +51,9 @@ public class MedicoModel {
     @NotNull(message = "Invalido")
     @NotBlank(message = "Invalido")
     private int especialidadeID;
+
+    public MedicoDTO toDTO(){
+        ModelMapper m = new ModelMapper();
+        return m.map(this, MedicoDTO.class);
+    }
 }

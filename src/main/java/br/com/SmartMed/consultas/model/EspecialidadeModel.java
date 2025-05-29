@@ -1,11 +1,13 @@
 package br.com.SmartMed.consultas.model;
 
+import br.com.SmartMed.consultas.rest.dto.EspecialidadeDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Data
 @AllArgsConstructor
@@ -25,4 +27,9 @@ public class EspecialidadeModel {
     @Column(name = "descricao", length = 255, nullable = false)
     @NotBlank(message = "Invalido")
     private String descricao;
+
+    public EspecialidadeDTO toDTO(){
+        ModelMapper m = new ModelMapper();
+        return m.map(this, EspecialidadeDTO.class);
+    }
 }
