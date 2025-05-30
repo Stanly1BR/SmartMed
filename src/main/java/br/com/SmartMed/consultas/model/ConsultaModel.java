@@ -2,6 +2,8 @@ package br.com.SmartMed.consultas.model;
 
 import br.com.SmartMed.consultas.rest.dto.ConsultaDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,15 +23,20 @@ public class ConsultaModel {
     private int id;
 
     @Column(name = "dataHoraConsulta", nullable = false)
+    @NotNull(message = "O campo dataHoraConsulta não pode ser vazio")
+    @NotBlank(message = "O campo dataHoraConsulta não pode ser branco")
     private Database dataHoraConsulta;
 
     @Column(name = "status", length = 16)
+    @NotBlank(message = "O campo status não pode ser branco")
     private String status;
 
     @Column(name = "valor")
+    @NotBlank(message = "O campo valor não pode ser branco")
     private float valor;
 
     @Column(name = "observacoes", length = 1024)
+    @NotBlank(message = "O campo observações não pode ser branco")
     private String observacoes;
 
     @Column(name = "pacienteID")

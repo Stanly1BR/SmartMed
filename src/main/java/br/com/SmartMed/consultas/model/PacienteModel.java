@@ -27,25 +27,30 @@ public class PacienteModel {
     private int id;
 
     @Column(name = "nome", length = 255, nullable = false)
-    @NotBlank(message = "Invalido")
-    @NotNull(message = "Invalido")
+    @NotNull(message = "O campo nome não pode ser vazio")
+    @NotBlank(message = "O campo nome não pode ser branco")
     private String nome;
 
     @Column(name = "cpf", length = 11, nullable = false, unique = false)
-    @NotNull(message = "Invalido")
+    @NotNull(message = "O campo cpf não pode ser vazio")
+    @NotBlank(message = "O campo cpf não pode ser branco")
     @CPF
     private String cpf;
 
     @Column(name = "dataNascimento")
+    @NotNull(message = "O campo dataNascimento não pode ser vazio")
+    @NotBlank(message = "O campo dataNascimento não pode ser branco")
     private Database dataNascimento;
 
     @Column(name = "telefone", length = 11, nullable = false)
-    @NotBlank(message = "Invalido")
+    @NotNull(message = "O campo telefone não pode ser vazio")
+    @NotBlank(message = "O campo telefone não pode ser branco")
     @Length(min = 11,message = "Invalido")
     private String telefone;
 
     @Column(name = "email", length = 64, nullable = true)
-    @NotBlank(message = "Invalido")
+    @NotNull(message = "O campo email não pode ser vazio")
+    @NotBlank(message = "O campo email não pode ser branco")
     @Email(message = "Invalido")
     private String email;
 

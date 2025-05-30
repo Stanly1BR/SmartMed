@@ -3,6 +3,7 @@ package br.com.SmartMed.consultas.model;
 import br.com.SmartMed.consultas.rest.dto.FormaPagamentoDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class FormaPagamentoModel {
     private int id;
 
     @Column(name = "descricao", length = 64)
-    @NotBlank
+    @NotBlank(message = "O campo descrição não pode ser branco")
     private String descricao;
 
     public FormaPagamentoDTO toDTO(){

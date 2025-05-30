@@ -20,12 +20,13 @@ public class EspecialidadeModel {
     private Integer id;
 
     @Column(name = "nome", length = 64, nullable = false)
-    @NotBlank(message = "Invalido")
-    @NotNull(message = "Invalido")
+    @NotNull(message = "O campo nome não pode ser vazio")
+    @NotBlank(message = "O campo nome não pode ser branco")
     private String nome;
 
     @Column(name = "descricao", length = 255, nullable = false)
-    @NotBlank(message = "Invalido")
+    @NotBlank(message = "O campo  descrição não pode ser branco")
+    @NotNull(message = "O campo descrição não pode ser vazio")
     private String descricao;
 
     public EspecialidadeDTO toDTO(){

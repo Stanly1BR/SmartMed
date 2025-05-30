@@ -24,32 +24,35 @@ public class MedicoModel {
     private int id;
 
     @Column(name = "nome", length = 255, nullable = false)
+    @NotNull(message = "O campo nome não pode ser vazio")
+    @NotBlank(message = "O campo nome não pode ser branco")
     private String nome;
 
     @Column(name = "crm", length = 8, nullable = false)
+    @NotNull(message = "O campo crm não pode ser vazio")
+    @NotBlank(message = "O campo crm não pode ser branco")
     private String crm;
 
-    @Column(name = "telefone", length = 11,unique = false)
+    @Column(name = "telefone", length = 11, nullable = false)
+    @NotNull(message = "O campo email não pode ser vazio")
+    @NotBlank(message = "O campo email não pode ser branco")
     @Length(min = 11)
-    @NotBlank(message = "Invalido")
     private String telefone;
 
-    @Column(name = "email", length = 65)
-    @NotNull(message = "Invalido")
+    @Column(name = "email", length = 65, nullable = false)
+    @NotNull(message = "O campo email não pode ser vazio")
+    @NotBlank(message = "O campo email não pode ser branco")
     @Email(message = "Invalido")
     private String email;
 
     @Column(name = "valorConsultaReferencia")
-    @NotBlank(message = "Invalido")
+    @NotBlank(message = "O campo valorConsulta não pode ser branco")
     private float valorConsultaReferencia;
 
     @Column(name = "ativo")
-    @NotBlank(message = "Invalido")
     private boolean ativo;
 
     @Column(name = "especialidadeID", nullable = false)
-    @NotNull(message = "Invalido")
-    @NotBlank(message = "Invalido")
     private int especialidadeID;
 
     public MedicoDTO toDTO(){
