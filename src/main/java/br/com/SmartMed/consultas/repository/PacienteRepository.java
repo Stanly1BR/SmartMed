@@ -1,6 +1,9 @@
 package br.com.SmartMed.consultas.repository;
 
 import br.com.SmartMed.consultas.model.PacienteModel;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,8 +15,11 @@ public interface PacienteRepository extends JpaRepository<PacienteModel, Integer
 
     Optional<PacienteModel> findByCpf(String cpf);
 
+    Boolean existsByCpf(String cpf);
+
     List<PacienteModel> findByTelefone(String telefone);
 
     List<PacienteModel> findByEmail(String email);
+
 
 }

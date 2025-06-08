@@ -10,6 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface MedicoRepository extends JpaRepository<MedicoModel, Integer> {
+
+    //List<MedicoModel> findById(int pId);
+
     List<MedicoModel> findByNome(String nome);
 
     Optional<MedicoModel> findByCrm(String crm);
