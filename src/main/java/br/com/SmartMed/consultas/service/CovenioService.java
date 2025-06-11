@@ -1,6 +1,6 @@
 package br.com.SmartMed.consultas.service;
 
-import br.com.SmartMed.consultas.exception.ObjectNotFoundException;
+import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.CovenioModel;
 import br.com.SmartMed.consultas.repository.CovenioRepository;
 import br.com.SmartMed.consultas.rest.dto.CovenioDTO;
@@ -32,16 +32,74 @@ public class CovenioService {
 
     @Transactional
     public CovenioDTO alterar(CovenioModel covenio){
-        return covenioRepository.save(covenio).toDTO();
+        try {
+
+            if(!covenioRepository.existsById(covenio.getId())){
+                throw new ConstraintException("Covenio não existe");
+            }
+            return covenioRepository.save(covenio).toDTO();
+
+        }catch (DataIntegrityException e){
+            throw  new DataIntegrityException("Erro! Não foi possível atualizar a covenio " + covenio.getCnpj() + " !");
+        }catch (ConstraintException e){
+            if (e.getMessage() == null || e.getMessage().isBlank()){
+                throw  new ConstraintException("Erro! Não foi possível atualizar a covenio " + covenio.getCnpj() + ": Restrição de integridade de dados.");
+            }
+            throw e;
+        }catch (BusinessRuleException e){
+            throw new BusinessRuleException("Erro! Não foi possível atualizar a covenio" + covenio.getCnpj() + "violação da regra de negocio");
+        }catch (SQLException e){
+            throw new SQLException("Erro! Não foi possível atualizar a covenio " + covenio.getCnpj() + "Falha na conexão com o  banco de dados");
+        }catch (ObjectNotFoundException e){
+            throw  new ObjectNotFoundException("Erro! Não foi possível atualizar a covenio " + covenio.getCnpj() + "Não encontrado no bando de dados");
+        }
     }
 
     @Transactional
     public CovenioDTO salvar(CovenioModel covenio){
-        return covenioRepository.save(covenio).toDTO();
+        try {
+            if (covenioRepository.existsById(covenio.getId())) {
+                throw new ConstraintException("Covenio já salvo");
+            }
+            return covenioRepository.save(covenio).toDTO();
+        }catch (DataIntegrityException e){
+            throw  new DataIntegrityException("Erro! Não foi possível salvar a covenio " + covenio.getCnpj() + " !");
+        }catch (ConstraintException e){
+            if (e.getMessage() == null || e.getMessage().isBlank()){
+                throw  new ConstraintException("Erro! Não foi possível salvar a covenio " + covenio.getCnpj() + ": Restrição de integridade de dados.");
+            }
+            throw e;
+        }catch (BusinessRuleException e){
+            throw new BusinessRuleException("Erro! Não foi possível salvar a covenio" + covenio.getCnpj() + "violação da regra de negocio");
+        }catch (SQLException e){
+            throw new SQLException("Erro! Não foi possível salvar a covenio " + covenio.getCnpj() + "Falha na conexão com o  banco de dados");
+        }catch (ObjectNotFoundException e){
+            throw  new ObjectNotFoundException("Erro! Não foi possível salvar a covenio " + covenio.getCnpj() + "Não encontrado no bando de dados");
+        }
     }
 
     @Transactional
     public void deletar(CovenioModel covenio){
-        covenioRepository.delete(covenio);
+        try {
+
+            if (!covenioRepository.existsById(covenio.getId())){
+                throw new ConstraintException("COvenio não existe");
+            }
+            covenioRepository.delete(covenio);
+
+        }catch (DataIntegrityException e){
+            throw  new DataIntegrityException("Erro! Não foi possível deletar a covenio " + covenio.getCnpj() + " !");
+        }catch (ConstraintException e){
+            if (e.getMessage() == null || e.getMessage().isBlank()){
+                throw  new ConstraintException("Erro! Não foi possível deletar a covenio " + covenio.getCnpj() + ": Restrição de integridade de dados.");
+            }
+            throw e;
+        }catch (BusinessRuleException e){
+            throw new BusinessRuleException("Erro! Não foi possível deletar a covenio" + covenio.getCnpj() + "violação da regra de negocio");
+        }catch (SQLException e){
+            throw new SQLException("Erro! Não foi possível deletar a covenio " + covenio.getCnpj() + "Falha na conexão com o  banco de dados");
+        }catch (ObjectNotFoundException e){
+            throw  new ObjectNotFoundException("Erro! Não foi possível deletar a covenio " + covenio.getCnpj() + "Não encontrado no bando de dados");
+        }
     }
 }

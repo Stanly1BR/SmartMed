@@ -14,6 +14,7 @@ public interface CovenioRepository extends JpaRepository<CovenioModel, Integer> 
     List<CovenioModel> findByNome(String nome);
 
     Optional<CovenioModel> findByCnpj(String cnpj);
+    boolean existsByCnpj();
 
     List<CovenioModel> findByTelefone(String telefone);
 

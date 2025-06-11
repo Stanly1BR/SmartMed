@@ -56,10 +56,10 @@ public class PacienteService {
      *
      * @param novoPaciente pacienteModel contendo os dados do novo paciente.
      * @return pacienteDTO representando o paciente salvo.
-     * @throws ConstraintException       Se o telefone ou e-mail já existirem.
-     * @throws DataIntegrityException    Se ocorrer violação de integridade.
-     * @throws BusinessRuleException     Se houver violação de regra de negócio.
-     * @throws SQLException              Se ocorrer falha de conexão com o banco de dados.
+     * @throws ConstraintException    Se o telefone ou e-mail já existirem.
+     * @throws DataIntegrityException Se ocorrer violação de integridade.
+     * @throws BusinessRuleException  Se houver violação de regra de negócio.
+     * @throws SQLException           Se ocorrer falha de conexão com o banco de dados.
      */
     @Transactional
     public PacienteDTO salvar(PacienteModel novoPaciente) {
@@ -94,10 +94,10 @@ public class PacienteService {
      *
      * @param pacienteExistente pacienteModel contendo os dados atualizados do cliete.
      * @return pacienteDTO representando o paciente atualizado.
-     * @throws ConstraintException       Se o telefone ou e-mail não existir.
-     * @throws DataIntegrityException    Se ocorrer violação de integridade.
-     * @throws BusinessRuleException     Se houver violação de regra de negócio.
-     * @throws SQLException              Se ocorrer falha de conexão com o banco de dados.
+     * @throws ConstraintException    Se o telefone ou e-mail não existir.
+     * @throws DataIntegrityException Se ocorrer violação de integridade.
+     * @throws BusinessRuleException  Se houver violação de regra de negócio.
+     * @throws SQLException           Se ocorrer falha de conexão com o banco de dados.
      */
     @Transactional
     public PacienteDTO atualizar(PacienteModel pacienteExistente) {
@@ -133,10 +133,10 @@ public class PacienteService {
      * Deleta um paciente da base de dados.
      *
      * @param pacienteExistente pacienteModel contendo os dados do paciente a ser deletado.
-     * @throws ConstraintException       Se o paciente (id) não existir.
-     * @throws DataIntegrityException    Se ocorrer violação de integridade.
-     * @throws BusinessRuleException     Se houver violação de regra de negócio.
-     * @throws SQLException              Se ocorrer falha de conexão com o banco de dados.
+     * @throws ConstraintException    Se o paciente (id) não existir.
+     * @throws DataIntegrityException Se ocorrer violação de integridade.
+     * @throws BusinessRuleException  Se houver violação de regra de negócio.
+     * @throws SQLException           Se ocorrer falha de conexão com o banco de dados.
      */
     @Transactional
     public void deletar(PacienteModel pacienteExistente) {
