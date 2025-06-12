@@ -1,6 +1,6 @@
 package br.com.SmartMed.consultas.service;
 
-import br.com.SmartMed.consultas.exception.ObjectNotFoundException;
+import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.EspecialidadeModel;
 import br.com.SmartMed.consultas.repository.EspecialidadeRepository;
 import br.com.SmartMed.consultas.rest.dto.EspecialidadeDTO;
@@ -31,16 +31,76 @@ public class EspecialidadeService {
 
     @Transactional
     public EspecialidadeDTO alterar(EspecialidadeModel especialidade){
-        return especialidadeRepository.save(especialidade).toDTO();
+        try {
+
+            if (!especialidadeRepository.existsById(especialidade.getId())) {
+                throw new ObjectNotFoundException("especialidade Não encpntrado");
+            }
+            return especialidadeRepository.save(especialidade).toDTO();
+
+        } catch (DataIntegrityException e) {
+            throw new DataIntegrityException("Erro! Não foi possível alterar a especialidade " + especialidade.getId() + " !");
+        } catch (ConstraintException e) {
+            if (e.getMessage() == null || e.getMessage().isBlank()) {
+                throw new ConstraintException("Erro ao alterar a especialidade " + especialidade.getId() + ": Restrição de integridade de dados.");
+            }
+            throw e;
+        } catch (BusinessRuleException e) {
+            throw new BusinessRuleException("Erro ao alterar a especialidade " + especialidade.getId() + "violação da regra de negocio");
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao alterar a especialidade " + especialidade.getId() + "Falha na conexão com o  banco de dados");
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException("Erro ao alterar a especialidade " + especialidade.getId() + "Não encontrado no bando de dados");
+        }
     }
 
     @Transactional
     public EspecialidadeDTO salvar(EspecialidadeModel especialidade){
-        return especialidadeRepository.save(especialidade).toDTO();
+        try {
+
+            if (especialidadeRepository.existsById(especialidade.getId())) {
+                throw new ObjectNotFoundException("especialidade Não encpntrado");
+            }
+            return especialidadeRepository.save(especialidade).toDTO();
+
+        } catch (DataIntegrityException e) {
+            throw new DataIntegrityException("Erro! Não foi possível salvar a especialidade " + especialidade.getId() + " !");
+        } catch (ConstraintException e) {
+            if (e.getMessage() == null || e.getMessage().isBlank()) {
+                throw new ConstraintException("Erro ao salvar a especialidade " + especialidade.getId() + ": Restrição de integridade de dados.");
+            }
+            throw e;
+        } catch (BusinessRuleException e) {
+            throw new BusinessRuleException("Erro ao salvar a especialidade " + especialidade.getId() + "violação da regra de negocio");
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao salvar a especialidade " + especialidade.getId() + "Falha na conexão com o  banco de dados");
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException("Erro ao salvar a especialidade " + especialidade.getId() + "Não encontrado no bando de dados");
+        }
     }
 
     @Transactional
     public void deletar(EspecialidadeModel especialidade){
-        especialidadeRepository.delete(especialidade);
+        try {
+
+            if (!especialidadeRepository.existsById(especialidade.getId())) {
+                throw new ObjectNotFoundException("especialidade Não encpntrado");
+            }
+            especialidadeRepository.delete(especialidade);
+
+        } catch (DataIntegrityException e) {
+            throw new DataIntegrityException("Erro! Não foi possível delete a especialidade " + especialidade.getId() + " !");
+        } catch (ConstraintException e) {
+            if (e.getMessage() == null || e.getMessage().isBlank()) {
+                throw new ConstraintException("Erro ao delete a especialidade " + especialidade.getId() + ": Restrição de integridade de dados.");
+            }
+            throw e;
+        } catch (BusinessRuleException e) {
+            throw new BusinessRuleException("Erro ao delete a especialidade " + especialidade.getId() + "violação da regra de negocio");
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao delete a especialidade " + especialidade.getId() + "Falha na conexão com o  banco de dados");
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException("Erro ao delete a especialidade " + especialidade.getId() + "Não encontrado no bando de dados");
+        }
     }
 }

@@ -18,8 +18,8 @@ public class CovenioService {
     private CovenioRepository covenioRepository;
 
     @Transactional(readOnly = true)
-    public CovenioDTO buscarPorID(int id){
-        CovenioModel covenio = covenioRepository.findById(id).orElseThrow(()-> new ObjectNotFoundException("Covenio com o "+id+" Não encontrado"));
+    public CovenioDTO buscarPorCnpj(String cnpj){
+        CovenioModel covenio = covenioRepository.findByCnpj(cnpj).orElseThrow(()-> new ObjectNotFoundException("Covenio com o "+cnpj+" Não encontrado"));
         return covenio.toDTO();
 
     }

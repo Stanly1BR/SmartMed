@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 
 @Data
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

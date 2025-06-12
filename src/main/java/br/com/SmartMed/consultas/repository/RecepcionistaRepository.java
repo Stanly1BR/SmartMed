@@ -12,6 +12,7 @@ public interface RecepcionistaRepository extends JpaRepository<RecepcionistaMode
     List<RecepcionistaModel> findByNome(String nome);
 
     Optional<RecepcionistaModel> findByCpf(String cpf);
+    Boolean existsByCpf(String cpf);
 
     List<RecepcionistaModel> findByTelefone(String telefone);
 
