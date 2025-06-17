@@ -34,7 +34,7 @@ public class EspecialidadeService {
         try {
 
             if (!especialidadeRepository.existsById(especialidade.getId())) {
-                throw new ObjectNotFoundException("especialidade Não encpntrado");
+                throw new ObjectNotFoundException("especialidade Não encontrado");
             }
             return especialidadeRepository.save(especialidade).toDTO();
 
@@ -58,8 +58,8 @@ public class EspecialidadeService {
     public EspecialidadeDTO salvar(EspecialidadeModel especialidade){
         try {
 
-            if (especialidadeRepository.existsById(especialidade.getId())) {
-                throw new ObjectNotFoundException("especialidade Não encpntrado");
+            if (especialidadeRepository.existsByNome(especialidade.getNome())) {
+                throw new ObjectNotFoundException("especialidade já cadastrada");
             }
             return especialidadeRepository.save(especialidade).toDTO();
 
@@ -84,7 +84,7 @@ public class EspecialidadeService {
         try {
 
             if (!especialidadeRepository.existsById(especialidade.getId())) {
-                throw new ObjectNotFoundException("especialidade Não encpntrado");
+                throw new ObjectNotFoundException("especialidade não encontrada");
             }
             especialidadeRepository.delete(especialidade);
 

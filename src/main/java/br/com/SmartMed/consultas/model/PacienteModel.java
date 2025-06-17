@@ -10,17 +10,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.dialect.Database;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
 import org.modelmapper.ModelMapper;
+
+import java.time.LocalDate;
 
 @Data
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Paciente")
+@Table(name = "paciente")
 public class PacienteModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,8 +40,7 @@ public class PacienteModel {
 
     @Column(name = "dataNascimento")
     @NotNull(message = "O campo dataNascimento não pode ser vazio")
-    @NotBlank(message = "O campo dataNascimento não pode ser branco")
-    private Database dataNascimento;
+    private LocalDate dataNascimento;
 
     @Column(name = "telefone", length = 11, nullable = false)
     @NotNull(message = "O campo telefone não pode ser vazio")

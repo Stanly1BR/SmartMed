@@ -16,6 +16,7 @@ public interface MedicoRepository extends JpaRepository<MedicoModel, Integer> {
     List<MedicoModel> findByNome(String nome);
 
     Optional<MedicoModel> findByCrm(String crm);
+    Boolean existsByCrm(String crm);
 
     List<MedicoModel> findByEmail(String email);
 

@@ -34,7 +34,7 @@ public class ConsultaService {
         try {
 
             if (!consultaRepository.existsById(consulta.getId())) {
-                throw new ObjectNotFoundException("Consulta  Não encpntrado");
+                throw new ObjectNotFoundException("Consulta  Não encontrado");
             }
             return consultaRepository.save(consulta).toDTO();
 

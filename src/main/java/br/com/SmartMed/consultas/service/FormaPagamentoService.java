@@ -61,7 +61,7 @@ public class FormaPagamentoService {
         try {
 
             if (formaPagamentoRepository.existsById(forma.getId())) {
-                throw new ObjectNotFoundException("Forma de pagamento Não encpntrado");
+                throw new ObjectNotFoundException("Forma de pagamento já salva");
             }
             return formaPagamentoRepository.save(forma).toDTO();
 

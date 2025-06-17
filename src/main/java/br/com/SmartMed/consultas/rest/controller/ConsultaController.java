@@ -40,7 +40,7 @@ public class ConsultaController {
 
     @PostMapping
     public ResponseEntity<ConsultaDTO> salvar(@Valid @RequestBody ConsultaModel consulta){
-        ConsultaDTO consultaDTO = consultaService.atualizar(consulta);
+        ConsultaDTO consultaDTO = consultaService.salvar(consulta);
         return ResponseEntity.status(HttpStatus.CREATED).body(consultaDTO);
     }
 

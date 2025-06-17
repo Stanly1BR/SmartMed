@@ -11,6 +11,7 @@ import org.hibernate.dialect.Database;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -24,15 +25,13 @@ public class ConsultaModel {
 
     @Column(name = "dataHoraConsulta", nullable = false)
     @NotNull(message = "O campo dataHoraConsulta não pode ser vazio")
-    @NotBlank(message = "O campo dataHoraConsulta não pode ser branco")
-    private Database dataHoraConsulta;
+    private LocalDateTime dataHoraConsulta;
 
     @Column(name = "status", length = 16)
     @NotBlank(message = "O campo status não pode ser branco")
     private String status;
 
     @Column(name = "valor")
-    @NotBlank(message = "O campo valor não pode ser branco")
     private float valor;
 
     @Column(name = "observacoes", length = 1024)

@@ -18,9 +18,9 @@ public class MedicoController {
     @Autowired
     private MedicoService medicoService;
 
-    @GetMapping("/{obterPorCrm}")
-    public ResponseEntity<MedicoDTO> ObterPorCrm(@PathVariable String crm){
-        MedicoDTO medico = medicoService.obterporCrm(crm);
+    @GetMapping("/{id}")
+    public ResponseEntity<MedicoDTO> ObterPorCrm(@PathVariable int id){
+        MedicoDTO medico = medicoService.obterporId(id);
         return ResponseEntity.status(HttpStatus.OK).body(medico);
     }
 
@@ -32,7 +32,7 @@ public class MedicoController {
 
     @PutMapping
     public ResponseEntity<MedicoDTO> alterar(@Valid @RequestBody MedicoModel medico){
-        MedicoDTO medicoDTO = medicoService.salvar(medico);
+        MedicoDTO medicoDTO = medicoService.atualizar(medico);
         return ResponseEntity.status(HttpStatus.OK).body(medicoDTO);
     }
 

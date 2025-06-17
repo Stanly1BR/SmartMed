@@ -13,7 +13,7 @@ import org.modelmapper.ModelMapper;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Especialidade")
+@Table(name = "especialidade")
 public class EspecialidadeModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -20,5 +20,5 @@ public interface CovenioRepository extends JpaRepository<CovenioModel, Integer> 
 
     List<CovenioModel> findByEmail(String email);
 
-    List<ConnectException> findByAtivo(boolean Status);
+    List<CovenioModel> findByAtivo(boolean Status);
 }

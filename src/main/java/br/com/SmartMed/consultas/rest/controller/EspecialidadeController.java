@@ -33,7 +33,7 @@ public class EspecialidadeController {
 
     @PutMapping()
     public ResponseEntity<EspecialidadeDTO> alterar(@Valid  @RequestBody EspecialidadeModel especialidade){
-        EspecialidadeDTO especialidadeDTO = especialidadeService.salvar(especialidade);
+        EspecialidadeDTO especialidadeDTO = especialidadeService.alterar(especialidade);
         return ResponseEntity.status(HttpStatus.OK).body(especialidadeDTO);
     }
 

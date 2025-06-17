@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/FormaPagamento")
+@RequestMapping("/formaPagamento")
 public class FormaPagamentoController {
 
     @Autowired
@@ -38,7 +38,7 @@ public class FormaPagamentoController {
 
     @PostMapping
     public ResponseEntity<FormaPagamentoDTO> salvar(@Valid @RequestBody FormaPagamentoModel forma){
-        FormaPagamentoDTO formaDTO = formaPagamentoService.alterar(forma);
+        FormaPagamentoDTO formaDTO = formaPagamentoService.salvar(forma);
         return ResponseEntity.status(HttpStatus.CREATED).body(formaDTO);
     }
 

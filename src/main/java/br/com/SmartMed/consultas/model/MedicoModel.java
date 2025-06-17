@@ -46,7 +46,6 @@ public class MedicoModel {
     private String email;
 
     @Column(name = "valorConsultaReferencia")
-    @NotBlank(message = "O campo valorConsulta não pode ser branco")
     private float valorConsultaReferencia;
 
     @Column(name = "ativo")

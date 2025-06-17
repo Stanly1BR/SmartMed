@@ -18,8 +18,8 @@ public class RecepcionistaService {
     private RecepcionistaRepository recepcionistaRepository;
 
     @Transactional(readOnly = true)
-    public RecepcionistaDTO obterPorCpf(String cpf){
-        RecepcionistaModel recepcionista = recepcionistaRepository.findByCpf(cpf).orElseThrow(()-> new ObjectNotFoundException("Recepcionista com o "+cpf+" não encontrado"));
+    public RecepcionistaDTO obterPorId(int id){
+        RecepcionistaModel recepcionista = recepcionistaRepository.findById(id).orElseThrow(()-> new ObjectNotFoundException("Recepcionista com o "+id+" não encontrado"));
         return recepcionista.toDTO();
     }
 
@@ -60,8 +60,8 @@ public class RecepcionistaService {
     public RecepcionistaDTO atualizar(RecepcionistaModel recepcionista){
         try {
 
-            if (!recepcionistaRepository.existsByCpf(recepcionista.getCpf())) {
-                throw new ConstraintException("O recepcionista com esse CPF " + recepcionista.getCpf() + " não existe na base de dados!");
+            if (!recepcionistaRepository.existsById(recepcionista.getId())) {
+                throw new ConstraintException("O recepcionista com esse CPF " + recepcionista.getId() + " não existe na base de dados!");
             }
 
             return recepcionistaRepository.save(recepcionista).toDTO();

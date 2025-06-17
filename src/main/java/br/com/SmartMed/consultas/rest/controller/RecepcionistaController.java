@@ -19,9 +19,9 @@ public class RecepcionistaController {
     @Autowired
     private RecepcionistaService recepcionistaService;
 
-    @GetMapping("/{obterPorCpf}")
-    public ResponseEntity<RecepcionistaDTO> obterPorCpf(@PathVariable String Cpf){
-        RecepcionistaDTO recepcionistaDTO = recepcionistaService.obterPorCpf(Cpf);
+    @GetMapping("/{id}")
+    public ResponseEntity<RecepcionistaDTO> obterPorId(@PathVariable int id){
+        RecepcionistaDTO recepcionistaDTO = recepcionistaService.obterPorId(id);
         return ResponseEntity.status(HttpStatus.OK).body(recepcionistaDTO);
     }
 
@@ -33,11 +33,17 @@ public class RecepcionistaController {
 
     @PutMapping()
     public  ResponseEntity<RecepcionistaDTO> alterar(@Valid @RequestBody RecepcionistaModel recepcionista){
-        RecepcionistaDTO recepcionistaDTO = recepcionistaService.salvar(recepcionista);
+        RecepcionistaDTO recepcionistaDTO = recepcionistaService.atualizar(recepcionista);
         return ResponseEntity.status(HttpStatus.OK).body(recepcionistaDTO);
     }
 
     @PostMapping()
+    public  ResponseEntity<RecepcionistaDTO> salvar(@Valid @RequestBody RecepcionistaModel recepcionista){
+        RecepcionistaDTO recepcionistaDTO = recepcionistaService.salvar(recepcionista);
+        return ResponseEntity.status(HttpStatus.CREATED).body(recepcionistaDTO);
+    }
+
+    @DeleteMapping()
     public void deletar(@Valid @RequestBody RecepcionistaModel recepcionista){
         recepcionistaService.deletar(recepcionista);
     }

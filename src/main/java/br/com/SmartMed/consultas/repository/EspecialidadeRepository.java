@@ -10,4 +10,5 @@ import java.util.List;
 public interface EspecialidadeRepository extends JpaRepository<EspecialidadeModel, Integer> {
 
     List<EspecialidadeModel> findByNome(String nome);
+    Boolean existsByNome(String nome);
 }

@@ -21,9 +21,9 @@ public class CovenioController {
     @Autowired
     private CovenioService covenioService;
 
-    @GetMapping("/{cnpj}")
-    public ResponseEntity<CovenioDTO> obterPorId(@PathVariable String cnpj){
-        CovenioDTO covenio = covenioService.buscarPorCnpj(cnpj);
+    @GetMapping("/{id}")
+    public ResponseEntity<CovenioDTO> obterPorId(@PathVariable int id){
+        CovenioDTO covenio = covenioService.buscarPorId(id);
         return ResponseEntity.status(HttpStatus.OK).body(covenio);
     }
 
@@ -41,7 +41,7 @@ public class CovenioController {
 
     @PostMapping
     public ResponseEntity<CovenioDTO> salvar(@Valid @RequestBody CovenioModel covenio){
-        CovenioDTO covenioDTO = covenioService.alterar(covenio);
+        CovenioDTO covenioDTO = covenioService.salvar(covenio);
         return ResponseEntity.status(HttpStatus.CREATED).body(covenioDTO);
     }
 
