@@ -1,19 +1,15 @@
 package br.com.SmartMed.consultas.model;
 
-import br.com.SmartMed.consultas.rest.dto.MedicoDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.modelmapper.ModelMapper;
 
 @Data
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -54,8 +50,8 @@ public class MedicoModel {
     @Column(name = "especialidadeID", nullable = false)
     private int especialidadeID;
 
-    public MedicoDTO toDTO(){
+    /*public MedicoDTO toDTO(){
         ModelMapper m = new ModelMapper();
         return m.map(this, MedicoDTO.class);
-    }
+    }*/
 }

@@ -4,6 +4,7 @@ import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.MedicoModel;
 import br.com.SmartMed.consultas.repository.MedicoRepository;
 import br.com.SmartMed.consultas.rest.dto.MedicoDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,16 +18,19 @@ public class MedicoService  {
     @Autowired
     private MedicoRepository medicoRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Transactional(readOnly = true)
     public MedicoDTO obterporId(int id){
         MedicoModel medico = medicoRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Medico com ID " + id+ " não encontrado."));
-        return medico.toDTO();
+        return modelMapper.map(medico, MedicoDTO.class);
     }
 
     @Transactional(readOnly = true)
     public List<MedicoDTO> obterTodos(){
         List<MedicoModel> medicos = medicoRepository.findAll();
-        return medicos.stream().map(medico -> medico.toDTO()).collect(Collectors.toList());
+        return medicos.stream().map(medico -> modelMapper.map(medico, MedicoDTO.class)).collect(Collectors.toList());
     }
 
     @Transactional
@@ -36,7 +40,7 @@ public class MedicoService  {
             if (medicoRepository.existsByCrm(medico.getCrm())) {
                 throw new ObjectNotFoundException("medico Não encpntrado");
             }
-            return medicoRepository.save(medico).toDTO();
+            return modelMapper.map(medicoRepository.save(medico), MedicoDTO.class);
 
         } catch (DataIntegrityException e) {
             throw new DataIntegrityException("Erro! Não foi possível salvar a medico " + medico.getCrm() + " !");
@@ -61,7 +65,7 @@ public class MedicoService  {
             if (!medicoRepository.existsById(medico.getId())) {
                 throw new ObjectNotFoundException("medico Não encpntrado");
             }
-            return medicoRepository.save(medico).toDTO();
+            return modelMapper.map(medicoRepository.save(medico), MedicoDTO.class);
 
         } catch (DataIntegrityException e) {
             throw new DataIntegrityException("Erro! Não foi possível atualizar a medico " + medico.getId() + " !");

@@ -4,6 +4,7 @@ import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.ConsultaModel;
 import br.com.SmartMed.consultas.repository.ConsultaRepository;
 import br.com.SmartMed.consultas.rest.dto.ConsultaDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,16 +18,19 @@ public class ConsultaService {
     @Autowired
     private ConsultaRepository consultaRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Transactional(readOnly = true)
     public ConsultaDTO buscaPorID(int id) {
         ConsultaModel consulta = consultaRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Consulta com o " + id + " Não encpntrado"));
-        return consulta.toDTO();
+        return modelMapper.map(consulta, ConsultaDTO.class);
     }
 
     @Transactional(readOnly = true)
     public List<ConsultaDTO> buscarTodos() {
         List<ConsultaModel> consultas = consultaRepository.findAll();
-        return consultas.stream().map(consulta -> consulta.toDTO()).collect(Collectors.toList());
+        return consultas.stream().map(consulta -> modelMapper.map(consulta, ConsultaDTO.class)).collect(Collectors.toList());
     }
 
     @Transactional
@@ -36,7 +40,7 @@ public class ConsultaService {
             if (!consultaRepository.existsById(consulta.getId())) {
                 throw new ObjectNotFoundException("Consulta  Não encontrado");
             }
-            return consultaRepository.save(consulta).toDTO();
+            return modelMapper.map(consultaRepository.save(consulta), ConsultaDTO.class);
 
         } catch (DataIntegrityException e) {
             throw new DataIntegrityException("Erro! Não foi possível atualizar a consulta " + consulta.getId() + " !");
@@ -60,7 +64,7 @@ public class ConsultaService {
             if (consultaRepository.existsById(consulta.getId())) {
                 throw new ObjectNotFoundException("Consulta já salvar");
             }
-            return consultaRepository.save(consulta).toDTO();
+            return modelMapper.map(consultaRepository.save(consulta), ConsultaDTO.class);
 
         } catch (DataIntegrityException e) {
             throw new DataIntegrityException("Erro! Não foi possível salvar a consulta " + consulta.getId() + " !");

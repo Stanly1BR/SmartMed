@@ -4,6 +4,7 @@ import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.PacienteModel;
 import br.com.SmartMed.consultas.repository.PacienteRepository;
 import br.com.SmartMed.consultas.rest.dto.PacienteDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,9 @@ public class PacienteService {
     @Autowired
     private PacienteRepository pacienteRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
 
     /**
      * Obtém um paciente pelo ID.
@@ -35,7 +39,7 @@ public class PacienteService {
     @Transactional(readOnly = true)
     public PacienteDTO obterPorId(int id) {
         PacienteModel paciente = pacienteRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Paciente com ID " + id + " não encontrado."));
-        return paciente.toDTO();
+        return modelMapper.map(paciente, PacienteDTO.class);
     }
 
     /**
@@ -47,7 +51,7 @@ public class PacienteService {
     public List<PacienteDTO> obterTodos() {
         List<PacienteModel> pacientes = pacienteRepository.findAll();
         return pacientes.stream()
-                .map(paciente -> paciente.toDTO())
+                .map(paciente -> modelMapper.map(paciente, PacienteDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -72,7 +76,7 @@ public class PacienteService {
             }
 
             //Salva o novo paciente na base de dados.
-            return pacienteRepository.save(novoPaciente).toDTO();
+            return modelMapper.map(pacienteRepository.save(novoPaciente), PacienteDTO.class);
 
         } catch (DataIntegrityException e) {
             throw new DataIntegrityException("Erro! Não foi possível salvar o paciente " + novoPaciente.getNome() + " !");
@@ -109,7 +113,7 @@ public class PacienteService {
             }
 
             //Atualiza o paciente na base de dados.
-            return pacienteRepository.save(pacienteExistente).toDTO();
+            return modelMapper.map(pacienteRepository.save(pacienteExistente), PacienteDTO.class);
 
         } catch (DataIntegrityException e) {
             throw new DataIntegrityException("Erro! Não foi possível atualizar o paciente " + pacienteExistente.getNome() + " !");
@@ -166,5 +170,4 @@ public class PacienteService {
             throw new ObjectNotFoundException("Erro! Não foi possível deletar o paciente" + pacienteExistente.getNome() + ". Não encontrado no banco de dados!");
         }
     }
-
 }

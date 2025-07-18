@@ -4,6 +4,7 @@ import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.RecepcionistaModel;
 import br.com.SmartMed.consultas.repository.RecepcionistaRepository;
 import br.com.SmartMed.consultas.rest.dto.RecepcionistaDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,16 +18,19 @@ public class RecepcionistaService {
     @Autowired
     private RecepcionistaRepository recepcionistaRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Transactional(readOnly = true)
     public RecepcionistaDTO obterPorId(int id){
         RecepcionistaModel recepcionista = recepcionistaRepository.findById(id).orElseThrow(()-> new ObjectNotFoundException("Recepcionista com o "+id+" não encontrado"));
-        return recepcionista.toDTO();
+        return modelMapper.map(recepcionista, RecepcionistaDTO.class);
     }
 
     @Transactional(readOnly = true)
     public List<RecepcionistaDTO> obterTodos(){
         List<RecepcionistaModel> recepcionistas = recepcionistaRepository.findAll();
-        return recepcionistas.stream().map(recepcionista -> recepcionista.toDTO()).collect(Collectors.toList());
+        return recepcionistas.stream().map(recepcionista -> modelMapper.map(recepcionista, RecepcionistaDTO.class)).collect(Collectors.toList());
     }
 
     @Transactional
@@ -37,7 +41,7 @@ public class RecepcionistaService {
                 throw new ConstraintException("O recepcionista com esse CPF " + recepcionista.getCpf() + " não existe na base de dados!");
             }
 
-            return recepcionistaRepository.save(recepcionista).toDTO();
+            return modelMapper.map(recepcionistaRepository.save(recepcionista), RecepcionistaDTO.class);
 
         } catch (DataIntegrityException e) {
             throw new DataIntegrityException("Erro! Não foi possível salvar o recepcionista " + recepcionista.getNome() + " !");
@@ -64,7 +68,7 @@ public class RecepcionistaService {
                 throw new ConstraintException("O recepcionista com esse CPF " + recepcionista.getId() + " não existe na base de dados!");
             }
 
-            return recepcionistaRepository.save(recepcionista).toDTO();
+            return modelMapper.map(recepcionistaRepository.save(recepcionista), RecepcionistaDTO.class);
 
         } catch (DataIntegrityException e) {
             throw new DataIntegrityException("Erro! Não foi possível atualizar o recepcionista " + recepcionista.getNome() + " !");

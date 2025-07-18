@@ -4,6 +4,7 @@ import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.EspecialidadeModel;
 import br.com.SmartMed.consultas.repository.EspecialidadeRepository;
 import br.com.SmartMed.consultas.rest.dto.EspecialidadeDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,16 +18,19 @@ public class EspecialidadeService {
     @Autowired
     private EspecialidadeRepository especialidadeRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Transactional(readOnly = true)
     public EspecialidadeDTO buscarPorID(int id){
         EspecialidadeModel especialidade = especialidadeRepository.findById(id).orElseThrow(()-> new ObjectNotFoundException("Especialidade com o "+id+" não encontrado"));
-        return especialidade.toDTO();
+        return modelMapper.map(especialidade, EspecialidadeDTO.class);
     }
 
     @Transactional(readOnly = true)
     public List<EspecialidadeDTO> buscarTodos(){
         List<EspecialidadeModel> especialidade = especialidadeRepository.findAll();
-        return especialidade.stream().map(especialidadeModel -> especialidadeModel.toDTO()).collect(Collectors.toList());
+        return especialidade.stream().map(especialidadeModel -> modelMapper.map(especialidade, EspecialidadeDTO.class)).collect(Collectors.toList());
     }
 
     @Transactional
@@ -36,7 +40,7 @@ public class EspecialidadeService {
             if (!especialidadeRepository.existsById(especialidade.getId())) {
                 throw new ObjectNotFoundException("especialidade Não encontrado");
             }
-            return especialidadeRepository.save(especialidade).toDTO();
+            return modelMapper.map(especialidadeRepository.save(especialidade), EspecialidadeDTO.class);
 
         } catch (DataIntegrityException e) {
             throw new DataIntegrityException("Erro! Não foi possível alterar a especialidade " + especialidade.getId() + " !");
@@ -61,7 +65,7 @@ public class EspecialidadeService {
             if (especialidadeRepository.existsByNome(especialidade.getNome())) {
                 throw new ObjectNotFoundException("especialidade já cadastrada");
             }
-            return especialidadeRepository.save(especialidade).toDTO();
+            return modelMapper.map(especialidadeRepository.save(especialidade), EspecialidadeDTO.class);
 
         } catch (DataIntegrityException e) {
             throw new DataIntegrityException("Erro! Não foi possível salvar a especialidade " + especialidade.getId() + " !");

@@ -1,11 +1,10 @@
 package br.com.SmartMed.consultas.service;
 
 import br.com.SmartMed.consultas.exception.*;
-import br.com.SmartMed.consultas.model.EspecialidadeModel;
 import br.com.SmartMed.consultas.model.FormaPagamentoModel;
 import br.com.SmartMed.consultas.repository.FormaPagamentoRepository;
-import br.com.SmartMed.consultas.rest.dto.EspecialidadeDTO;
 import br.com.SmartMed.consultas.rest.dto.FormaPagamentoDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,16 +18,19 @@ public class FormaPagamentoService {
     @Autowired
     private FormaPagamentoRepository formaPagamentoRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Transactional(readOnly = true)
     public FormaPagamentoDTO buscarPorID(int id){
         FormaPagamentoModel forma = formaPagamentoRepository.findById(id).orElseThrow(()-> new ObjectNotFoundException("Forma com o "+id+" não encontrado"));
-        return forma.toDTO();
+        return modelMapper.map(forma, FormaPagamentoDTO.class);
     }
 
     @Transactional(readOnly = true)
     public List<FormaPagamentoDTO> buscarTodos(){
         List<FormaPagamentoModel> forma = formaPagamentoRepository.findAll();
-        return forma.stream().map(formaPagamentoModel -> formaPagamentoModel.toDTO()).collect(Collectors.toList());
+        return forma.stream().map(formaPagamentoModel -> modelMapper.map(forma, FormaPagamentoDTO.class)).collect(Collectors.toList());
     }
 
     @Transactional
@@ -38,7 +40,7 @@ public class FormaPagamentoService {
             if (!formaPagamentoRepository.existsById(forma.getId())) {
                 throw new ObjectNotFoundException("Forma de pagamento Não encpntrado");
             }
-            return formaPagamentoRepository.save(forma).toDTO();
+            return modelMapper.map(formaPagamentoRepository.save(forma), FormaPagamentoDTO.class);
 
         } catch (DataIntegrityException e) {
             throw new DataIntegrityException("Erro! Não foi possível alterar a Forma de pagamento " + forma.getId() + " !");
@@ -63,7 +65,7 @@ public class FormaPagamentoService {
             if (formaPagamentoRepository.existsById(forma.getId())) {
                 throw new ObjectNotFoundException("Forma de pagamento já salva");
             }
-            return formaPagamentoRepository.save(forma).toDTO();
+            return modelMapper.map(formaPagamentoRepository.save(forma), FormaPagamentoDTO.class);
 
         } catch (DataIntegrityException e) {
             throw new DataIntegrityException("Erro! Não foi possível salvar a Forma de pagamento " + forma.getId() + " !");
