@@ -23,8 +23,6 @@ public interface MedicoRepository extends JpaRepository<MedicoModel, Integer> {
     List<MedicoModel> findByTelefone(String telefone);
 
     List<MedicoModel> findByValorConsultaReferencia(float valorConsulta);
- /*dando erro
-    List<MedicoModel> findByespecialidade(int especialidade);*/
 
     List<MedicoModel> findByAtivo(boolean Status);
 

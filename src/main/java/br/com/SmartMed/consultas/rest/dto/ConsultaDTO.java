@@ -2,7 +2,6 @@ package br.com.SmartMed.consultas.rest.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
