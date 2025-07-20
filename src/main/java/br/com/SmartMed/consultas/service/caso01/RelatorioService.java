@@ -38,15 +38,22 @@ public class RelatorioService {
 
     @Transactional(readOnly = true)
     public RelatorioDTO gerarRelatorio(LocalDate dataInicio, LocalDate dataFim) {
+        /*
+        * - Converte as datas para incluir o horário
+        * - `atStartOfDay()`: Define como 00:00:00
+        * - `atTime(LocalTime.MAX)`: Define como 23:59:59.999999999
+        * */
         LocalDateTime inicio = dataInicio.atStartOfDay();
         LocalDateTime fim = dataFim.atTime(LocalTime.MAX);
 
         List<ConsultaModel> consultas = consultaRepository.buscarConsultasPorPeriodo(inicio, fim);
 
+        //- Soma todos os valores das consultas usando Stream API
         double totalGeral = consultas.stream()
                 .mapToDouble(ConsultaModel::getValor)
                 .sum();
 
+        //- Agrupa as consultas por forma de pagamento e soma os valores
         Map<Integer, Double> totalPorFormaPagamento = consultas.stream()
                 .collect(Collectors.groupingBy(
                         ConsultaModel::getFormaPagamentoID,
@@ -68,6 +75,12 @@ public class RelatorioService {
                 })
                 .collect(Collectors.toList());
 
+        /*
+        * - Converte os resultados em DTOs para retorno
+        * - Busca as descrições das formas de pagamento
+        * - Trata casos onde a forma de pagamento não é encontrada
+        * */
+
         List<RelatorioFaturamentoPorCovenioDTO> porConvenio = totalPorConvenio.entrySet().stream()
                 .map(entry -> {
                     String nome = covenioRepository.findById(entry.getKey())
@@ -79,7 +92,5 @@ public class RelatorioService {
 
         // Criando um objeto com os parametros
         return new RelatorioDTO(totalGeral, porFormaPagamento, porConvenio);
-
-
     }
 }
