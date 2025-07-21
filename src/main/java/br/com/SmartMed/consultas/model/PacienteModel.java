@@ -51,8 +51,8 @@ public class PacienteModel {
     @Email(message = "Invalido")
     private String email;
 
-    public PacienteDTO toDTO(){
+    /*public PacienteDTO toDTO(){
         ModelMapper m = new ModelMapper();
         return  m.map(this, PacienteDTO.class);
-    }
+    }*/
 }

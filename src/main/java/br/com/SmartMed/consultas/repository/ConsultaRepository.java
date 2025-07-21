@@ -26,13 +26,5 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
                                                   @Param("dataFim") LocalDateTime dataFim);
 
     //caso02
-    @Query("SELECT c FROM ConsultaModel c WHERE c.medicoID = :medicoId " +
-            "AND c.dataHoraConsulta BETWEEN :inicio AND :fim")
-    List<ConsultaModel> findConsultasByMedicoIdAndPeriodo(@Param("medicoId") int medicoId,
-                                                         @Param("inicio") LocalDateTime inicio,
-                                                         @Param("fim") LocalDateTime fim);
-
-    @Query("SELECT m FROM MedicoModel m WHERE m.especialidadeID = :especialidadeId " +
-            "AND m.ativo = true")
-    List<MedicoModel> findMedicosByEspecialidadeId(@Param("especialidadeId") int especialidadeId);
+    List<ConsultaModel> findByMedicoIDAndDataHoraConsultaGreaterThanEqual(int id, LocalDateTime dataHoraInicial);
 }

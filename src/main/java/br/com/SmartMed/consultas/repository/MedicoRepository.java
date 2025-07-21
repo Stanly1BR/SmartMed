@@ -26,4 +26,5 @@ public interface MedicoRepository extends JpaRepository<MedicoModel, Integer> {
 
     List<MedicoModel> findByAtivo(boolean Status);
 
+    List<MedicoModel> findByEspecialidadeIDAndAtivoIsTrue(int especialidadeID);
 }
