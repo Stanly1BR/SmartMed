@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import java.time.LocalTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,6 +51,13 @@ public class MedicoModel {
 
     @Column(name = "especialidadeID", nullable = false)
     private int especialidadeID;
+
+    @Column(name = "horarioInicioAtendimento", nullable = false)
+    private LocalTime horarioInicioAtendimento = LocalTime.of(8, 0);
+
+    @Column(name = "horarioFimAtendimento", nullable = false)
+    private LocalTime horarioFimAtendimento = LocalTime.of(18, 0);
+
 
     /*public MedicoDTO toDTO(){
         ModelMapper m = new ModelMapper();

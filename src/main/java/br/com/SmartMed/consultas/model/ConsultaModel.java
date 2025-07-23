@@ -49,6 +49,9 @@ public class ConsultaModel {
     @Column(name = "recepcionistaID")
     private int recepcionistaID;
 
+    @Column(name = "duracaoMinutos", nullable = false)
+    private int duracaoMinutos;
+
     /*public ConsultaDTO toDTO(){
         ModelMapper m = new ModelMapper();
         return m.map(this, ConsultaDTO.class);

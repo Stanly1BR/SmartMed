@@ -61,9 +61,7 @@ public class ConsultaService {
     @Transactional
     public ConsultaDTO salvar(ConsultaModel consulta) {
         try {
-            if (consultaRepository.existsById(consulta.getId())) {
-                throw new ObjectNotFoundException("Consulta já salvar");
-            }
+
             return modelMapper.map(consultaRepository.save(consulta), ConsultaDTO.class);
 
         } catch (DataIntegrityException e) {

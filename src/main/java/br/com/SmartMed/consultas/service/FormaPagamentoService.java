@@ -62,9 +62,6 @@ public class FormaPagamentoService {
     public FormaPagamentoDTO salvar(FormaPagamentoModel forma){
         try {
 
-            if (formaPagamentoRepository.existsById(forma.getId())) {
-                throw new ObjectNotFoundException("Forma de pagamento já salva");
-            }
             return modelMapper.map(formaPagamentoRepository.save(forma), FormaPagamentoDTO.class);
 
         } catch (DataIntegrityException e) {
