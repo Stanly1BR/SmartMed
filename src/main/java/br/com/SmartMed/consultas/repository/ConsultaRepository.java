@@ -1,9 +1,8 @@
 package br.com.SmartMed.consultas.repository;
 
 import br.com.SmartMed.consultas.model.ConsultaModel;
-import br.com.SmartMed.consultas.model.MedicoModel;
-import br.com.SmartMed.consultas.rest.dto.caso01.RelatorioFaturamentoPorCovenioDTO;
-import br.com.SmartMed.consultas.rest.dto.caso01.RelatorioFaturamentoPorPagamentoDTO;
+import br.com.SmartMed.consultas.rest.dto.RelatorioFaturamentoPorCovenioDTO;
+import br.com.SmartMed.consultas.rest.dto.RelatorioFaturamentoPorPagamentoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,12 +20,7 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
     List<ConsultaModel> findByValor(float valorConsulta);
     List<ConsultaModel> findByObservacoes(String observacionConsulta);
 
-    // Método para verificar existência por data/hora - Útil para agendamento
-    boolean existsByDataHoraConsulta(LocalDateTime pDataHoraConsulta); // Nova query method do seu amigo
-
-
-    // @Query para Faturamento por Forma de Pagamento (JPQL com NEW e seu DTO específico)
-    @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.caso01.RelatorioFaturamentoPorPagamentoDTO(fp.descricao, SUM(c.valor)) " +
+    @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.RelatorioFaturamentoPorPagamentoDTO(fp.descricao, SUM(c.valor)) " +
             "FROM ConsultaModel c JOIN FormaPagamentoModel fp ON c.formaPagamentoID = fp.id " +
             "WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :dataInicio AND :dataFim " +
             "GROUP BY fp.descricao")
@@ -34,8 +28,7 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
             @Param("dataInicio") LocalDateTime dataInicio,
             @Param("dataFim") LocalDateTime dataFim);
 
-    // @Query para Faturamento por Convênio (JPQL com NEW e seu DTO específico)
-    @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.caso01.RelatorioFaturamentoPorCovenioDTO(conv.nome, SUM(c.valor)) " +
+    @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.RelatorioFaturamentoPorCovenioDTO(conv.nome, SUM(c.valor)) " +
             "FROM ConsultaModel c JOIN CovenioModel conv ON c.covenioID = conv.id " +
             "WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :dataInicio AND :dataFim " +
             "GROUP BY conv.nome")
@@ -43,21 +36,25 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
             @Param("dataInicio") LocalDateTime dataInicio,
             @Param("dataFim") LocalDateTime dataFim);
 
-    // @Query para Faturamento Total (JPQL)
     @Query("SELECT SUM(c.valor) FROM ConsultaModel c " +
             "WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :dataInicio AND :dataFim")
     Double findTotalFaturamento(@Param("dataInicio") LocalDateTime dataInicio,
                                 @Param("dataFim") LocalDateTime dataFim);
 
-    // @Query para buscar consultas por médico e período (para agendamento inteligente)
-    // Manter a versão mais robusta se você tem o campo duracaoMinutos em ConsultaModel.
-    // Lembre-se de verificar a compatibilidade de FUNCTION('TIMESTAMPADD', ...) com seu dialeto.
+    // --- Métodos Adicionais para Agendamento Inteligente (Caso 02) ---
+
+    // Este método é mais genérico e verifica se já existe uma consulta começando em um dado horário
+    boolean existsByDataHoraConsulta(LocalDateTime pDataHoraConsulta);
+
+    // Busca todas as consultas de um médico de um período, considerando a duração para sobreposição
+    // Verifique o log do Hibernate ao iniciar para ver se o H2 a traduz corretamente.
+    // Se tiver problemas, pode ser necessário simplificar a query e fazer mais checagens em Java.
     @Query("SELECT c FROM ConsultaModel c WHERE c.medicoID = :medicoId " +
-            "AND c.dataHoraConsulta >= :inicioPeriodo AND c.dataHoraConsulta <= :fimPeriodo " +
-            "OR (FUNCTION('TIMESTAMPADD', MINUTE, c.duracaoMinutos, c.dataHoraConsulta) BETWEEN :inicioPeriodo AND :fimPeriodo) " +
+            "AND c.dataHoraConsulta BETWEEN :inicioPeriodo AND :fimPeriodo " +
             "ORDER BY c.dataHoraConsulta ASC")
     List<ConsultaModel> findConsultasByMedicoAndPeriodo(
             @Param("medicoId") Integer medicoId,
             @Param("inicioPeriodo") LocalDateTime inicioPeriodo,
             @Param("fimPeriodo") LocalDateTime fimPeriodo);
+
 }

@@ -1,4 +1,4 @@
-package br.com.SmartMed.consultas.rest.dto.caso01;
+package br.com.SmartMed.consultas.rest.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RelatorioFaturamentoPorCovenioDTO {
-    private String convenio;
+public class RelatorioFaturamentoPorPagamentoDTO {
+    private String formaPagamento;
     private double valor;
 }

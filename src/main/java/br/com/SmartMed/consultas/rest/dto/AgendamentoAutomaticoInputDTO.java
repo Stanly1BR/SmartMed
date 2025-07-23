@@ -1,4 +1,4 @@
-package br.com.SmartMed.consultas.rest.dto.caso02;
+package br.com.SmartMed.consultas.rest.dto;
 
 import lombok.Data;
 
@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 
 @Data
 public class AgendamentoAutomaticoInputDTO {
-    private int PacienteID;
-    private int EspecialidadeID;
+    private int pacienteID;
+    private int especialidadeID;
     private LocalDateTime dataHoraInicial;
     private int duracaoConsultaMinutos;
     private int covenioID;
