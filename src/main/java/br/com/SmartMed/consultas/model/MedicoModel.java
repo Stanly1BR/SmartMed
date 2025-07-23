@@ -15,7 +15,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Medico")
+@Table(name = "medico")
 public class MedicoModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

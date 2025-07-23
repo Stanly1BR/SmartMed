@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "FormaPagamento")
+@Table(name = "formaPagamento")
 public class FormaPagamentoModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
