@@ -49,8 +49,8 @@ public class AgendamentoAutomaticoService {
         LocalDateTime limiteBusca = input.getDataHoraInicial().plusDays(60);
 
         for (MedicoModel medico : medicosDisponiveis) {
+
             // Buscamos todas as consultas do médico a partir do inicioPeriodo e até o limiteBusca.
-            // A lógica de sobreposição será feita em Java.
             List<ConsultaModel> consultasExistentes = consultaRepository
                     .findConsultasByMedicoAndPeriodo(
                             medico.getId(),
@@ -69,7 +69,7 @@ public class AgendamentoAutomaticoService {
                     if (horarioTentativa.toLocalDate().isAfter(horarioTentativa.toLocalDate().minusDays(1))) {
                         horarioTentativa = LocalDateTime.of(horarioTentativa.toLocalDate(), medico.getHorarioInicioAtendimento());
                     }
-                    continue; // Pula para a próxima iteração do loop principal
+                    continue;
                 }
 
                 // Ajustar para o horário de início do médico se a tentativa for antes do horário de expediente
@@ -83,7 +83,7 @@ public class AgendamentoAutomaticoService {
                 // Verificar se o horário de término proposto excede o horário de atendimento do médico para o dia
                 if (horarioFimProposto.toLocalTime().isAfter(medico.getHorarioFimAtendimento()) && !horarioTentativa.toLocalTime().equals(medico.getHorarioFimAtendimento())) {
                     horarioTentativa = horarioTentativa.plusDays(1).with(medico.getHorarioInicioAtendimento());
-                    continue; // Pula para a próxima iteração do loop principal
+                    continue;
                 }
 
                 // Verificar conflitos com consultas existentes
@@ -93,29 +93,28 @@ public class AgendamentoAutomaticoService {
 
                     // Lógica de sobreposição de intervalos: (InícioA < FimB) E (FimA > InícioB)
                     if (horarioTentativa.isBefore(fimExistente) && horarioFimProposto.isAfter(inicioExistente)) {
-                        horarioLivreParaAgendamento = false; // Há conflito
+                        horarioLivreParaAgendamento = false;
                         // Se houver conflito, o próximo horário de tentativa deve ser APÓS o fim da consulta existente que causa o conflito.
                         horarioTentativa = fimExistente;
-                        break; // Sai do loop de consultas existentes
+                        break;
                     }
                 }
 
                 if (horarioLivreParaAgendamento) {
                     horarioEncontrado = horarioTentativa;
                     medicoSelecionado = medico;
-                    break; // Sai do loop while (horarioTentativa...)
+                    break;
+
                 } else {
-                    // Se não estava livre (por conflito), horarioTentativa já foi ajustado para depois do conflito.
-                    // Se não houve conflito mas não estava livre (ex: excedeu o dia, já tratado com continue),
-                    // ou se simplesmente o slot atual não funcionou, avançar para o próximo slot
-                    if(horarioEncontrado == null) { // Só avança se um horário ainda não foi encontrado
+
+                    if(horarioEncontrado == null) {
                         horarioTentativa = horarioTentativa.plusMinutes(input.getDuracaoConsultaMinutos());
                     }
                 }
             }
 
             if (horarioEncontrado != null) {
-                break; // Sai do loop for (MedicoModel medico...)
+                break;
             }
         }
 
@@ -133,12 +132,12 @@ public class AgendamentoAutomaticoService {
         novaConsulta.setPacienteID(paciente.getId());
         novaConsulta.setMedicoID(medicoSelecionado.getId());
         novaConsulta.setValor(valorConsulta);
-        novaConsulta.setStatus("AGENDADA"); // Novo status para a consulta agendada
+        novaConsulta.setStatus("AGENDADA");
         novaConsulta.setFormaPagamentoID(input.getFormaPagamentoID());
         novaConsulta.setCovenioID(input.getCovenioID());
         novaConsulta.setDuracaoMinutos(input.getDuracaoConsultaMinutos());
         novaConsulta.setObservacoes("Agendamento automático via sistema.");
-        novaConsulta.setRecepcionistaID(1); // Assumindo recepcionista ID 1 do data.sql
+        novaConsulta.setRecepcionistaID(1);
 
         ConsultaModel consultaSalva = consultaRepository.save(novaConsulta);
 

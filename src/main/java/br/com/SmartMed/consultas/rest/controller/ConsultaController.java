@@ -2,12 +2,10 @@ package br.com.SmartMed.consultas.rest.controller;
 
 import br.com.SmartMed.consultas.model.ConsultaModel;
 import br.com.SmartMed.consultas.model.FormaPagamentoModel;
-import br.com.SmartMed.consultas.rest.dto.AgendamentoAutomaticoInputDTO;
-import br.com.SmartMed.consultas.rest.dto.AgendamentoAutomaticoOutputDTO;
-import br.com.SmartMed.consultas.rest.dto.ConsultaDTO;
-import br.com.SmartMed.consultas.rest.dto.FormaPagamentoDTO;
+import br.com.SmartMed.consultas.rest.dto.*;
 import br.com.SmartMed.consultas.service.AgendamentoAutomaticoService;
 import br.com.SmartMed.consultas.service.ConsultaService;
+import br.com.SmartMed.consultas.service.HistoricoConsultaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +23,8 @@ public class ConsultaController {
 
     @Autowired
     private AgendamentoAutomaticoService agendamentoAutomaticoService;
+    @Autowired
+    private HistoricoConsultaService historicoConsultaService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ConsultaDTO> obterPorId(@PathVariable int id){
@@ -55,8 +55,14 @@ public class ConsultaController {
             @Valid @RequestBody AgendamentoAutomaticoInputDTO input){
 
         AgendamentoAutomaticoOutputDTO resultado = agendamentoAutomaticoService.agendarConsultaAutomaticamente(input);
-
         return ResponseEntity.ok(resultado);
+    }
+
+    @PostMapping("/historico")
+    public ResponseEntity<List<HistoricoConsultaOutputDTO>> obterHistorico(
+            @Valid @RequestBody HistoricoConsultaInputDTO input){
+        List<HistoricoConsultaOutputDTO> historico = historicoConsultaService.getHIstoricoConsultas(input);
+        return ResponseEntity.ok(historico);
     }
 
     @DeleteMapping

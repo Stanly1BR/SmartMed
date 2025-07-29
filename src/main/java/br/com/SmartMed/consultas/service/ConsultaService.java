@@ -3,6 +3,7 @@ package br.com.SmartMed.consultas.service;
 import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.ConsultaModel;
 import br.com.SmartMed.consultas.repository.ConsultaRepository;
+import br.com.SmartMed.consultas.repository.PacienteRepository;
 import br.com.SmartMed.consultas.rest.dto.ConsultaDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,12 @@ public class ConsultaService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private MedicoService medicoService;
+
+    @Autowired
+    private PacienteRepository pacienteRepository;
 
     @Transactional(readOnly = true)
     public ConsultaDTO buscaPorID(int id) {
