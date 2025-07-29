@@ -53,19 +53,19 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
             @Param("inicioPeriodo") LocalDateTime inicioPeriodo,
             @Param("fimPeriodo") LocalDateTime fimPeriodo);
 
-    // --- Novo Método para Histórico de Consultas (Caso 03) ---
+    // --- (Caso 03) ---
     @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.HistoricoConsultaOutputDTO(" +
             "c.dataHoraConsulta, m.nome, e.nome, c.valor, c.status, c.observacoes) " +
             "FROM ConsultaModel c " +
             "LEFT JOIN MedicoModel m ON c.medicoID = m.id " +
-            "LEFT JOIN EspecialidadeModel e ON m.especialidadeID = e.id " + // Join com especialidade do médico
+            "LEFT JOIN EspecialidadeModel e ON m.especialidadeID = e.id " +
             "WHERE c.pacienteID = :pacienteId " +
             "AND (:dataInicio IS NULL OR c.dataHoraConsulta >= :dataInicio) " +
             "AND (:dataFim IS NULL OR c.dataHoraConsulta <= :dataFim) " +
             "AND (:medicoId IS NULL OR c.medicoID = :medicoId) " +
             "AND (:status IS NULL OR c.status = :status) " +
-            "AND (:especialidadeId IS NULL OR m.especialidadeID = :especialidadeId) " + // Filtro por especialidade
-            "ORDER BY c.dataHoraConsulta DESC") // Mais recente para mais antiga
+            "AND (:especialidadeId IS NULL OR m.especialidadeID = :especialidadeId) " +
+            "ORDER BY c.dataHoraConsulta DESC")
     List<HistoricoConsultaOutputDTO> findHistoricoConsultasByPacienteAndFilters(
             @Param("pacienteId") Integer pacienteId,
             @Param("dataInicio") LocalDateTime dataInicio,
@@ -73,4 +73,10 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
             @Param("medicoId") Integer medicoId,
             @Param("status") String status,
             @Param("especialidadeId") Integer especialidadeId);
+
+    // --- (Caso 04) ---
+    List<ConsultaModel> findByMedicoIDAndDataHoraConsultaBetweenOrderByDataHoraConsultaAsc(
+            Integer medicoID,
+            LocalDateTime dataHoraInicioDoDia,
+            LocalDateTime dataHoraFimDoDia);
 }
