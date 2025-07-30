@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MedicoAgendaOutputDTO {
     private String medico;
-    private LocalDateTime data;
+    private LocalDate data;
     private List<String> horariosOcupados;
     private List<String> horariosDisponiveis;
 }

@@ -11,5 +11,5 @@ public class MedicoAgendaInputDTO {
     @NotNull(message = "O ID do médico não pode ser nulo.")
     private Integer medicoID;
     @NotNull(message = "A data não pode ser nula.")
-    private LocalDateTime data;
+    private LocalDate data;
 }
