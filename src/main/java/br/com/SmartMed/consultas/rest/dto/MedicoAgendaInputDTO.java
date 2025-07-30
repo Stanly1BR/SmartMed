@@ -4,11 +4,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class MedicoAgendaInputDTO {
     @NotNull(message = "O ID do médico não pode ser nulo.")
     private Integer medicoID;
     @NotNull(message = "A data não pode ser nula.")
-    private LocalDate data;
+    private LocalDateTime data;
 }

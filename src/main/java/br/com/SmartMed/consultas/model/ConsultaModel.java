@@ -38,7 +38,7 @@ public class ConsultaModel {
     private int pacienteID;
 
     @Column(name = "medicoID")
-    private int medicoID;
+    private Integer medicoID;
 
     @Column(name = "formaPagamentoID")
     private int formaPagamentoID;

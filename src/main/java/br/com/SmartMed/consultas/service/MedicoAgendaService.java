@@ -45,7 +45,7 @@ public class MedicoAgendaService {
 
         // 3. Buscar consultas existentes do médico para a data informada
         List<ConsultaModel> consultasExistentes = consultaRepository
-                .findByMedicoIDAndDataHoraConsultaBetweenOrderByDataHoraConsultaAsc(
+                .findConsultasByMedicoAndDataRange(
                         input.getMedicoID(),
                         inicioDoDia,
                         fimDoDia

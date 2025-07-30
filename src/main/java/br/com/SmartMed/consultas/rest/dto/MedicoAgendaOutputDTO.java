@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -12,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MedicoAgendaOutputDTO {
     private String medico;
-    private LocalDate data;
+    private LocalDateTime data;
     private List<String> horariosOcupados;
     private List<String> horariosDisponiveis;
 }
