@@ -1,5 +1,6 @@
 package br.com.SmartMed.consultas.rest.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RelatorioFaturamentoPorCovenioDTO {
-    private String convenio;
-    private double valor;
+public class RelatorioCovenioDTO {
+    private String nome;
+    private Double valor;
 }

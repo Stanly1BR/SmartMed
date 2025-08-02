@@ -1,10 +1,7 @@
 package br.com.SmartMed.consultas.rest.controller;
 
 import br.com.SmartMed.consultas.model.MedicoModel;
-import br.com.SmartMed.consultas.rest.dto.MedicoAgendaInputDTO;
-import br.com.SmartMed.consultas.rest.dto.MedicoAgendaOutputDTO;
 import br.com.SmartMed.consultas.rest.dto.MedicoDTO;
-import br.com.SmartMed.consultas.service.MedicoAgendaService;
 import br.com.SmartMed.consultas.service.MedicoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +17,6 @@ public class MedicoController {
 
     @Autowired
     private MedicoService medicoService;
-
-    @Autowired
-    private MedicoAgendaService medicoAgendaService;
 
     @GetMapping("/{id}")
     public ResponseEntity<MedicoDTO> ObterPorCrm(@PathVariable int id){
@@ -46,13 +40,6 @@ public class MedicoController {
     public ResponseEntity<MedicoDTO> salvar(@Valid @RequestBody MedicoModel medico){
         MedicoDTO medicoDTO = medicoService.salvar(medico);
         return ResponseEntity.status(HttpStatus.CREATED).body(medicoDTO);
-    }
-
-    @PostMapping("/agenda")
-    public ResponseEntity<MedicoAgendaOutputDTO> getAgendaMedico(
-            @Valid @RequestBody MedicoAgendaInputDTO input) {
-        MedicoAgendaOutputDTO agenda = medicoAgendaService.getAgendaMedico(input);
-        return ResponseEntity.ok(agenda);
     }
 
     @DeleteMapping

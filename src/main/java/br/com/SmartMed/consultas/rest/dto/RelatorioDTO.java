@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RelatorioDTO {
-    private double totalGeral;
-    private List<RelatorioFaturamentoPorPagamentoDTO> porFormaPagamento;
-    private List<RelatorioFaturamentoPorCovenioDTO> porCovenio;
+    private Double total;
+    List<RelatorioCovenioDTO> relatorioCovenioDTOS;
+    List<RelatorioFormaPagamentoDTO> relatorioFormaPagamentoDTOS;
 }

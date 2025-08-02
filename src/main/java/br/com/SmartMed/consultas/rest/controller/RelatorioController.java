@@ -11,18 +11,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 
 @RestController
-@RequestMapping("/relatorios")
+@RequestMapping("/relatorio")
 public class RelatorioController {
+
     @Autowired
     private RelatorioService relatorioService;
 
+    // Link: http://localhost:8080/api/relatorio/faturamento
     @GetMapping("/faturamento")
-    public ResponseEntity<RelatorioDTO> gerarRelatorioFaturamento(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate dataFim){
-        RelatorioDTO relatorio = relatorioService.gerarRelatorio(dataInicio, dataFim);
+    public ResponseEntity<RelatorioDTO> obterFaturamento(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+                                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim){
+        RelatorioDTO relatorio = relatorioService.gerarRelatorioDeFaturamento(dataInicio, dataFim);
         return ResponseEntity.ok(relatorio);
     }
 }

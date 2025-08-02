@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RelatorioFaturamentoPorPagamentoDTO {
-    private String formaPagamento;
-    private double valor;
+public class RelatorioFormaPagamentoDTO {
+    private String descricao;
+    private Double valor;
 }

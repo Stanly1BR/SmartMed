@@ -1,36 +1,43 @@
 package br.com.SmartMed.consultas.service;
 
 import br.com.SmartMed.consultas.repository.ConsultaRepository;
+import br.com.SmartMed.consultas.rest.dto.RelatorioCovenioDTO;
 import br.com.SmartMed.consultas.rest.dto.RelatorioDTO;
-import br.com.SmartMed.consultas.rest.dto.RelatorioFaturamentoPorCovenioDTO;
-import br.com.SmartMed.consultas.rest.dto.RelatorioFaturamentoPorPagamentoDTO;
+import br.com.SmartMed.consultas.rest.dto.RelatorioFormaPagamentoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @Service
 public class RelatorioService {
+
     @Autowired
     private ConsultaRepository consultaRepository;
 
     @Transactional(readOnly = true)
-    public RelatorioDTO gerarRelatorio(LocalDate dataInicio, LocalDate dataFim) {
-        LocalDateTime inicio = dataInicio.atStartOfDay();
-        LocalDateTime fim = dataFim.atTime(LocalTime.MAX);
+    public RelatorioDTO gerarRelatorioDeFaturamento(LocalDate dataInicio, LocalDate dataFim){
+        try{
+            List<RelatorioFormaPagamentoDTO> FaturamentoFP =
+            consultaRepository.BuscaFaturamentoPorFormaPagamento(dataInicio, dataFim);
 
-        Double totalGeral = consultaRepository.findTotalFaturamento(inicio, fim);
-        List<RelatorioFaturamentoPorPagamentoDTO> porFormaPagamento = consultaRepository.findFaturamentoPorFormaPagamento(inicio, fim);
-        List<RelatorioFaturamentoPorCovenioDTO> porConvenio = consultaRepository.findFaturamentoPorConvenio(inicio, fim);
+            List<RelatorioCovenioDTO> FaturamentoC =
+            consultaRepository.BuscaFaturamentoPorCovenio(dataInicio, dataFim);
 
-        if (totalGeral == null) {
-            totalGeral = 0.0;
+            Double FaturamentoTotal =
+            consultaRepository.BuscaFaturamentoTotal(dataInicio, dataFim);
+
+            return new RelatorioDTO(
+                    FaturamentoTotal,
+                    FaturamentoC,
+                    FaturamentoFP
+            );
+
+        }catch(Exception e){
+            throw new RuntimeException("Erro ao gerar relatório de faturamento: " + e.getMessage());
         }
-
-        return new RelatorioDTO(totalGeral, porFormaPagamento, porConvenio);
     }
 }

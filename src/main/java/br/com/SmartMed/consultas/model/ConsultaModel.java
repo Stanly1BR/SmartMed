@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -21,7 +22,7 @@ public class ConsultaModel {
 
     @Column(name = "dataHoraConsulta", nullable = false)
     @NotNull(message = "O campo dataHoraConsulta não pode ser vazio")
-    private LocalDateTime dataHoraConsulta;
+    private LocalDate dataHoraConsulta;
 
     @Column(name = "status", length = 16)
     @NotBlank(message = "O campo status não pode ser branco")
