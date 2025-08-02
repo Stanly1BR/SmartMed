@@ -53,4 +53,9 @@ public class ConsultaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(agendar);
     }
 
+    @PostMapping("/historico")
+    public ResponseEntity<List<HistoricoPacienteOutputDTO>> buscarHistoricoPaciente(@Valid @RequestBody HistoricoPacienteInputDTO input) {
+        List<HistoricoPacienteOutputDTO> historico = consultaService.buscarHistoricoDoPaciente(input);
+        return ResponseEntity.ok(historico);
+    }
 }

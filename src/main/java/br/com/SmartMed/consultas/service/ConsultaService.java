@@ -6,9 +6,7 @@ import br.com.SmartMed.consultas.model.MedicoModel;
 import br.com.SmartMed.consultas.model.PacienteModel;
 import br.com.SmartMed.consultas.repository.ConsultaRepository;
 import br.com.SmartMed.consultas.repository.PacienteRepository;
-import br.com.SmartMed.consultas.rest.dto.ConsultaDTO;
-import br.com.SmartMed.consultas.rest.dto.AgendamentoAutomaticoInputDTO;
-import br.com.SmartMed.consultas.rest.dto.AgendamentoAutomaticoOutputDTO;
+import br.com.SmartMed.consultas.rest.dto.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -115,6 +113,27 @@ public class ConsultaService {
         } catch (ObjectNotFoundException e) {
             throw new ObjectNotFoundException("Erro ao deletar a consulta " + consulta.getId() + "Não encontrado no bando de dados");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<HistoricoPacienteOutputDTO> buscarHistoricoDoPaciente(HistoricoPacienteInputDTO input){
+
+        if (!pacienteRepository.existsById(input.getPacienteID())) {
+            throw new ObjectNotFoundException("Paciente com o ID ("+input.getPacienteID()+") não constar no banco de dados.");
+        }
+
+        List<HistoricoPacienteOutputDTO> historico = consultaRepository.ConsultasPaciente(
+                input.getPacienteID(),
+                input.getDatInicio(),
+                input.getDatFim(),
+                input.getMedicoID(),
+                input.getStatus()
+        );
+        if (historico.isEmpty()) {
+            throw new ObjectNotFoundException("Nenhuma consulta encontrada para os critérios informados");
+        }
+
+        return historico;
     }
 
     @Transactional

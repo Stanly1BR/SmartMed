@@ -2,6 +2,7 @@ package br.com.SmartMed.consultas.repository;
 
 import br.com.SmartMed.consultas.model.ConsultaModel;
 import br.com.SmartMed.consultas.model.MedicoModel;
+import br.com.SmartMed.consultas.rest.dto.HistoricoPacienteOutputDTO;
 import br.com.SmartMed.consultas.rest.dto.RelatorioCovenioDTO;
 import br.com.SmartMed.consultas.rest.dto.RelatorioFormaPagamentoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -56,5 +57,29 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
             @Param("data") LocalDate data);
 
     //-- (Caso 03) --
+    @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.HistoricoPacienteOutputDTO(" +
+            "c.dataHoraConsulta, " +
+            "m.nome, " +
+            "e.nome, " +
+            "c.valor, " +
+            "c.status, " +
+            "c.observacoes) " +
+            "FROM ConsultaModel c " +
+            "JOIN PacienteModel p ON p.id = c.pacienteID " +
+            "JOIN MedicoModel m ON m.id = c.medicoID " +
+            "JOIN EspecialidadeModel e ON e.id = m.especialidadeID " +
+            "WHERE p.ativo = true " +
+            "AND c.pacienteID = :pacienteID " +
+            "AND (:datInicio IS NULL OR c.dataHoraConsulta >= :datInicio) " +
+            "AND (:datFim IS NULL OR c.dataHoraConsulta <= :datFim) " +
+            "AND (:medicoID IS NULL OR c.medicoID = :medicoID) " +
+            "AND (:status IS NULL OR c.status = :status) " +
+            "ORDER BY c.dataHoraConsulta DESC")
+    List<HistoricoPacienteOutputDTO> ConsultasPaciente(
+            @Param("pacienteID") Integer pacienteID,
+            @Param("datInicio") LocalDateTime datInicio,
+            @Param("datFim") LocalDateTime datFim,
+            @Param("medicoID") Integer medicoID,
+            @Param("status") String status);
 
 }
