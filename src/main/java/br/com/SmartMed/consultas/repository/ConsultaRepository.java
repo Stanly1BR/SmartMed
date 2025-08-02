@@ -37,7 +37,7 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
                                                          @Param(("dataFim")) LocalDateTime dataFim);
 
     @Query("SELECT SUM(c.valor) FROM ConsultaModel c " +
-            "WHERE c.status = 'REALIZADA' AND DATE(c.dataHoraConsulta) BETWEEN :dataInicio AND :dataFim ")
+            "WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :dataInicio AND :dataFim ")
     Double BuscaFaturamentoTotal(@Param("dataInicio") LocalDateTime dataInicio,
                                  @Param("dataFim") LocalDateTime dataFim);
 
