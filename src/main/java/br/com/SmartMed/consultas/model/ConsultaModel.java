@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
@@ -22,7 +23,7 @@ public class ConsultaModel {
 
     @Column(name = "dataHoraConsulta", nullable = false)
     @NotNull(message = "O campo dataHoraConsulta não pode ser vazio")
-    private LocalDate dataHoraConsulta;
+    private LocalDateTime dataHoraConsulta;
 
     @Column(name = "status", length = 16)
     @NotBlank(message = "O campo status não pode ser branco")
@@ -51,7 +52,7 @@ public class ConsultaModel {
     private int recepcionistaID;
 
     @Column(name = "duracaoMinutos", nullable = false)
-    private int duracaoMinutos;
+    private LocalTime duracaoMinutos = LocalTime.of(0,30);
 
     /*public ConsultaDTO toDTO(){
         ModelMapper m = new ModelMapper();

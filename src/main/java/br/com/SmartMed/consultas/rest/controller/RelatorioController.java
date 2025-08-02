@@ -21,10 +21,10 @@ public class RelatorioController {
     @Autowired
     private RelatorioService relatorioService;
 
-    // Link: http://localhost:8080/api/relatorio/faturamento
+    // Link: http://localhost:8080/api/relatorio/faturamento?dataInicio=2025-05-01T00:00:00&dataFim=2025-07-31T23:59:59
     @GetMapping("/faturamento")
-    public ResponseEntity<RelatorioDTO> obterFaturamento(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
-                                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim){
+    public ResponseEntity<RelatorioDTO> obterFaturamento(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime dataInicio,
+                                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime dataFim){
         RelatorioDTO relatorio = relatorioService.gerarRelatorioDeFaturamento(dataInicio, dataFim);
         return ResponseEntity.ok(relatorio);
     }

@@ -46,4 +46,11 @@ public class ConsultaController {
     public void deletar(@Valid @RequestBody ConsultaModel consulta){
         consultaService.deletar(consulta);
     }
+
+    @PostMapping("/agendamento_automatico")
+    public ResponseEntity<AgendamentoAutomaticoOutputDTO> agendarConsultaAutomatico(@Valid @RequestBody AgendamentoAutomaticoInputDTO input){
+        AgendamentoAutomaticoOutputDTO agendar = consultaService.agendarConsultaAutomatico(input);
+        return ResponseEntity.status(HttpStatus.CREATED).body(agendar);
+    }
+
 }

@@ -19,7 +19,7 @@ public class RelatorioService {
     private ConsultaRepository consultaRepository;
 
     @Transactional(readOnly = true)
-    public RelatorioDTO gerarRelatorioDeFaturamento(LocalDate dataInicio, LocalDate dataFim){
+    public RelatorioDTO gerarRelatorioDeFaturamento(LocalDateTime dataInicio, LocalDateTime dataFim){
         try{
             List<RelatorioFormaPagamentoDTO> FaturamentoFP =
             consultaRepository.BuscaFaturamentoPorFormaPagamento(dataInicio, dataFim);

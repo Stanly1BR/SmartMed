@@ -2,15 +2,24 @@ package br.com.SmartMed.consultas.service;
 
 import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.ConsultaModel;
+import br.com.SmartMed.consultas.model.MedicoModel;
+import br.com.SmartMed.consultas.model.PacienteModel;
 import br.com.SmartMed.consultas.repository.ConsultaRepository;
 import br.com.SmartMed.consultas.repository.PacienteRepository;
 import br.com.SmartMed.consultas.rest.dto.ConsultaDTO;
+import br.com.SmartMed.consultas.rest.dto.AgendamentoAutomaticoInputDTO;
+import br.com.SmartMed.consultas.rest.dto.AgendamentoAutomaticoOutputDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,13 +29,10 @@ public class ConsultaService {
     private ConsultaRepository consultaRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private MedicoService medicoService;
-
-    @Autowired
     private PacienteRepository pacienteRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
     public ConsultaDTO buscaPorID(int id) {
@@ -111,4 +117,132 @@ public class ConsultaService {
         }
     }
 
+    @Transactional
+    public AgendamentoAutomaticoOutputDTO agendarConsultaAutomatico(AgendamentoAutomaticoInputDTO input){
+        try {
+            validarDados(input);
+
+            //Esta buscando medicos disponiveis
+            List<MedicoModel> medicosDisponiveis;
+            if(input.getEspecialidadeID() != null){
+                medicosDisponiveis = consultaRepository.BuscaMedicosAtivosPorEspecialidade(input.getEspecialidadeID());
+            }else{
+                medicosDisponiveis = consultaRepository.BuscaMedicosAtivos();
+            }
+
+            if(medicosDisponiveis.isEmpty()){
+                throw new BusinessRuleException("Nenhum médico disponível para os critérios informados");
+            }
+
+            MedicoModel medicoDisponiveil = null;
+            LocalDateTime horarioDisponivel = null;
+
+            for(MedicoModel medico : medicosDisponiveis){
+                // Verifica se o horário inicial está dentro do horário de atendimento do médico
+                LocalDateTime horarioInicial = ajustarHorarioInicial(input.getDataHoraInicial(), medico);
+
+                // Busca consultas do médico para o dia
+                List<ConsultaModel> consultasDoDia = consultaRepository.buscarConsultasPorMedicoEData(
+                        medico.getId(),
+                        horarioInicial.toLocalDate());
+
+                // Tenta encontrar horário livre
+                LocalDateTime horarioLivre = encontrarHorarioLivre(horarioInicial, medico, consultasDoDia);
+                if(horarioLivre != null){
+                    medicoDisponiveil = medico;
+                    horarioDisponivel = horarioLivre;
+                    break;
+                }
+            }
+            if (medicoDisponiveil == null || horarioDisponivel == null){
+                throw new BusinessRuleException("Nenhum horário disponível encontrado");
+            }
+
+            float valorConsulta = medicoDisponiveil.getValorConsultaReferencia();
+            if (input.getCovenioID() != null) {
+                valorConsulta *= 0.5f; // 50% do valor para consultas com convênio
+            }
+
+            ConsultaModel novaConsulta = new ConsultaModel();
+            novaConsulta.setDataHoraConsulta(horarioDisponivel);
+            novaConsulta.setPacienteID(input.getPacienteID());
+            novaConsulta.setMedicoID(medicoDisponiveil.getId());
+            novaConsulta.setStatus("AGENDADA");
+            novaConsulta.setCovenioID(input.getCovenioID());
+            novaConsulta.setFormaPagamentoID(input.getFormaPagamentoID());
+            novaConsulta.setDuracaoMinutos(LocalTime.of(0, 30));
+            novaConsulta.setValor(valorConsulta);
+            novaConsulta.setObservacoes("Consulta agendada automaticamente para " +
+                    horarioDisponivel.format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm")) +
+                    (input.getCovenioID() != null ? " com convênio" : " particular"));
+
+
+            ConsultaModel consultaSalva = consultaRepository.save(novaConsulta);
+
+            return new AgendamentoAutomaticoOutputDTO(
+                    consultaSalva.getId(),
+                    consultaSalva.getDataHoraConsulta(),
+                    medicoDisponiveil.getNome(),
+                    buscarNomePaciente(input.getPacienteID()),
+                    valorConsulta
+            );
+
+        } catch (Exception e){
+            throw new BusinessRuleException("Erro ao agendar consulta automatica: " + e.getMessage());
+        }
+    }
+
+    private void validarDados(AgendamentoAutomaticoInputDTO input) {
+        if (input.getDataHoraInicial() == null){
+            throw new BusinessRuleException("Data/hora inicial é obrigatória");
+
+        }
+        if (input.getFormaPagamentoID() == null){
+            throw new BusinessRuleException("Forma de pagamento é obrigatória");
+
+        }
+        if(input.getPacienteID() == null){
+            throw new BusinessRuleException("ID do paciente é obrigatório");
+
+        }
+    }
+
+    private LocalDateTime ajustarHorarioInicial(LocalDateTime dataHora, MedicoModel medico) {
+        LocalTime horaInicial = dataHora.toLocalTime();
+        if (horaInicial.isBefore(medico.getHorarioInicioAtendimento())) {
+            return dataHora.with(medico.getHorarioInicioAtendimento());
+        }
+        return dataHora;
+    }
+
+    private LocalDateTime encontrarHorarioLivre(
+            LocalDateTime horarioInicial,
+            MedicoModel medico,
+            List<ConsultaModel> consultasExistentes) {
+
+        LocalDateTime horarioFinal = horarioInicial.toLocalDate()
+                .atTime(medico.getHorarioFimAtendimento());
+
+        // Cria conjunto de horários ocupados
+        Set<LocalDateTime> horariosOcupados = consultasExistentes.stream()
+                .map(ConsultaModel::getDataHoraConsulta)
+                .collect(Collectors.toSet());
+
+        // Procura próximo horário livre
+        LocalDateTime horarioAtual = horarioInicial;
+        while (horarioAtual.isBefore(horarioFinal)) {
+            if (!horariosOcupados.contains(horarioAtual)) {
+                return horarioAtual;
+            }
+            horarioAtual = horarioAtual.plusMinutes(30);
+        }
+        return null;
+    }
+    private String buscarNomePaciente (Integer pacienteId){
+        return pacienteRepository.findById(pacienteId)
+                .map(PacienteModel::getNome)
+                .orElse("Paciente não encontrado");
+    }
 }
+
+
