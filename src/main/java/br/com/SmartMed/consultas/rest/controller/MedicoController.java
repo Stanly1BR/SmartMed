@@ -1,6 +1,8 @@
 package br.com.SmartMed.consultas.rest.controller;
 
 import br.com.SmartMed.consultas.model.MedicoModel;
+import br.com.SmartMed.consultas.rest.dto.AgendaMEdicoOutputDTO;
+import br.com.SmartMed.consultas.rest.dto.AgendaMedicoInputDTO;
 import br.com.SmartMed.consultas.rest.dto.MedicoDTO;
 import br.com.SmartMed.consultas.service.MedicoService;
 import jakarta.validation.Valid;
@@ -45,5 +47,11 @@ public class MedicoController {
     @DeleteMapping
     public void deletar(@Valid @RequestBody MedicoModel medico){
         medicoService.deletar(medico);
+    }
+
+    @PostMapping("/agenda")
+    public ResponseEntity<AgendaMEdicoOutputDTO> agendarMedico(@Valid @RequestBody AgendaMedicoInputDTO input){
+        AgendaMEdicoOutputDTO agenda = medicoService.consultarAgendaMedico(input);
+        return ResponseEntity.ok(agenda);
     }
 }

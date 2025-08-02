@@ -163,7 +163,7 @@ public class ConsultaService {
                 // Busca consultas do médico para o dia
                 List<ConsultaModel> consultasDoDia = consultaRepository.buscarConsultasPorMedicoEData(
                         medico.getId(),
-                        horarioInicial.toLocalDate());
+                        horarioInicial);
 
                 // Tenta encontrar horário livre
                 LocalDateTime horarioLivre = encontrarHorarioLivre(horarioInicial, medico, consultasDoDia);

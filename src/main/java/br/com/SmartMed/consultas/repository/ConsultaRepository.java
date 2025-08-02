@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer> {
@@ -42,19 +43,21 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
     Double BuscaFaturamentoTotal(@Param("dataInicio") LocalDateTime dataInicio,
                                  @Param("dataFim") LocalDateTime dataFim);
 
-    //-- (Caso 02) --
+    //-- (Caso 02 e Caso 04) --
     @Query("SELECT m FROM MedicoModel m WHERE m.ativo = TRUE")
     List<MedicoModel> BuscaMedicosAtivos();
 
     @Query("SELECT m FROM MedicoModel m JOIN EspecialidadeModel e ON m.especialidadeID = e.id WHERE m.ativo = TRUE ")
     List<MedicoModel> BuscaMedicosAtivosPorEspecialidade(@Param("idEspecialidade") int idEspecialidade);
 
+    @Query("SELECT m FROM MedicoModel m WHERE m.id = :medicoId AND m.ativo = TRUE")
+    Optional<MedicoModel> buscarMedico(@Param("medicoId") Integer medicoId);
 
     @Query("SELECT c FROM ConsultaModel c WHERE c.medicoID = :medicoId AND " +
-            "CAST(c.dataHoraConsulta AS LocalDate) = :data AND c.status != 'CANCELADA'")
+            "c.dataHoraConsulta = :data AND c.status != 'CANCELADA'")
     List<ConsultaModel> buscarConsultasPorMedicoEData(
             @Param("medicoId") Integer medicoId,
-            @Param("data") LocalDate data);
+            @Param("data") LocalDateTime data);
 
     //-- (Caso 03) --
     @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.HistoricoPacienteOutputDTO(" +
