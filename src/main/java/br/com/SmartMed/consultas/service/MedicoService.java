@@ -124,7 +124,7 @@ public class MedicoService  {
     public AgendaMEdicoOutputDTO consultarAgendaMedico(AgendaMedicoInputDTO input) {
 
         MedicoModel medico = consultaRepository.buscarMedico(input.getMedicoID())
-                .orElseThrow(() -> new ObjectNotFoundException("Médico não encontrado ou inativo"));
+                .orElseThrow(() -> new ObjectNotFoundException("Médico não encontrado "));
 
         LocalDateTime inicioDia = input.getData()
                 .withHour(medico.getHorarioInicioAtendimento().getHour())
@@ -136,9 +136,9 @@ public class MedicoService  {
                 .withMinute(medico.getHorarioFimAtendimento().getMinute())
                 .withSecond(0);
 
-        List<ConsultaModel> consultasDoDia = consultaRepository.buscarConsultasPorMedicoEData(
+        List<ConsultaModel> consultasDoDia = consultaRepository.buscarConsultasPorMedicoEData02(
                 input.getMedicoID(),
-                inicioDia
+                inicioDia.withHour(0).withHour(0).withMinute(0).withSecond(0)
         );
 
         // Cria conjunto de horários ocupados

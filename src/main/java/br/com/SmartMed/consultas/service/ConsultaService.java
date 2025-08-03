@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -163,7 +164,8 @@ public class ConsultaService {
                 // Busca consultas do médico para o dia
                 List<ConsultaModel> consultasDoDia = consultaRepository.buscarConsultasPorMedicoEData(
                         medico.getId(),
-                        horarioInicial);
+                        horarioInicial.withHour(0).withMinute(0).withSecond(0)
+                );
 
                 // Tenta encontrar horário livre
                 LocalDateTime horarioLivre = encontrarHorarioLivre(horarioInicial, medico, consultasDoDia);
@@ -243,20 +245,38 @@ public class ConsultaService {
                 .atTime(medico.getHorarioFimAtendimento());
 
         // Cria conjunto de horários ocupados
-        Set<LocalDateTime> horariosOcupados = consultasExistentes.stream()
-                .map(ConsultaModel::getDataHoraConsulta)
-                .collect(Collectors.toSet());
+        Set<LocalDateTime> horariosOcupados = new HashSet<>();
+        for (ConsultaModel consulta : consultasExistentes) {
+            LocalDateTime h = consulta.getDataHoraConsulta();
+            horariosOcupados.add(h);
+            horariosOcupados.add(h.plusMinutes(15));
+            horariosOcupados.add(h.plusMinutes(30));
+        }
 
         // Procura próximo horário livre
         LocalDateTime horarioAtual = horarioInicial;
-        while (horarioAtual.isBefore(horarioFinal)) {
-            if (!horariosOcupados.contains(horarioAtual)) {
+        while (horarioAtual.plusMinutes(30).isBefore(horarioFinal) ||
+                horarioAtual.plusMinutes(30).equals(horarioFinal)) {
+
+            boolean horarioLivre = true;
+            LocalDateTime verificar = horarioAtual;
+
+            for (int i = 0; i <= 30; i += 15) {
+                if (horariosOcupados.contains(verificar.plusMinutes(i))) {
+                    horarioLivre = false;
+                    break;
+                }
+            }
+
+            if (horarioLivre) {
                 return horarioAtual;
             }
+
             horarioAtual = horarioAtual.plusMinutes(30);
         }
         return null;
     }
+
     private String buscarNomePaciente (Integer pacienteId){
         return pacienteRepository.findById(pacienteId)
                 .map(PacienteModel::getNome)

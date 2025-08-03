@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
     Double BuscaFaturamentoTotal(@Param("dataInicio") LocalDateTime dataInicio,
                                  @Param("dataFim") LocalDateTime dataFim);
 
-    //-- (Caso 02 e Caso 04) --
+    //-- (Caso 02) --
     @Query("SELECT m FROM MedicoModel m WHERE m.ativo = TRUE")
     List<MedicoModel> BuscaMedicosAtivos();
 
@@ -84,5 +85,15 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
             @Param("datFim") LocalDateTime datFim,
             @Param("medicoID") Integer medicoID,
             @Param("status") String status);
+
+    //-- (Caso 04) --
+
+    @Query("SELECT c FROM ConsultaModel c WHERE c.medicoID = :medicoId AND " +
+            "CAST(c.dataHoraConsulta AS DATE) = CAST(:data AS DATE) AND c.status != 'CANCELADA'")
+    List<ConsultaModel> buscarConsultasPorMedicoEData02(
+            @Param("medicoId") Integer medicoId,
+            @Param("data") LocalDateTime data);
+
+
 
 }
