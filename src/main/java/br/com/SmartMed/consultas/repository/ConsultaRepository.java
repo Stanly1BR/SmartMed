@@ -27,38 +27,39 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
     //-- (Caso 01) --
     @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.RelatorioFormaPagamentoDTO(fp.descricao, SUM(c.valor)) " +
             "FROM ConsultaModel c JOIN FormaPagamentoModel fp ON c.formaPagamentoID = fp.id " +
-            "WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :dataInicio AND :dataFim " +
+            "WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :pDataInicio AND :pDataFim " +
             "GROUP BY fp.descricao")
-    List<RelatorioFormaPagamentoDTO> BuscaFaturamentoPorFormaPagamento(@Param(("dataInicio")) LocalDateTime dataInicio,
-                                                                       @Param(("dataFim")) LocalDateTime dataFim);
+    List<RelatorioFormaPagamentoDTO> BuscaFaturamentoPorFormaPagamento(@Param(("pDataInicio")) LocalDateTime pDataInicio,
+                                                                       @Param(("pDataFim")) LocalDateTime pDataFim);
 
     @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.RelatorioCovenioDTO(co.nome, SUM(c.valor)) " +
             "FROM ConsultaModel c JOIN CovenioModel co ON c.covenioID = co.id " +
-            "WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :dataInicio AND :dataFim " +
+            "WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :pDataInicio AND :pDataFim " +
             "GROUP BY co.nome")
-    List<RelatorioCovenioDTO> BuscaFaturamentoPorCovenio(@Param(("dataInicio")) LocalDateTime dataInicio,
-                                                         @Param(("dataFim")) LocalDateTime dataFim);
+    List<RelatorioCovenioDTO> BuscaFaturamentoPorCovenio(@Param(("pDataInicio")) LocalDateTime pDataInicio,
+                                                         @Param(("pDataFim")) LocalDateTime pDataFim);
 
     @Query("SELECT SUM(c.valor) FROM ConsultaModel c " +
-            "WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :dataInicio AND :dataFim ")
-    Double BuscaFaturamentoTotal(@Param("dataInicio") LocalDateTime dataInicio,
-                                 @Param("dataFim") LocalDateTime dataFim);
+            "WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :pDataInicio AND :pDataFim ")
+    Double BuscaFaturamentoTotal(@Param("dataInicio") LocalDateTime pDataInicio,
+                                 @Param("dataFim") LocalDateTime pDataFim);
 
     //-- (Caso 02) --
     @Query("SELECT m FROM MedicoModel m WHERE m.ativo = TRUE")
     List<MedicoModel> BuscaMedicosAtivos();
 
-    @Query("SELECT m FROM MedicoModel m JOIN EspecialidadeModel e ON m.especialidadeID = e.id WHERE m.ativo = TRUE ")
-    List<MedicoModel> BuscaMedicosAtivosPorEspecialidade(@Param("idEspecialidade") int idEspecialidade);
+    @Query("SELECT m FROM MedicoModel m JOIN EspecialidadeModel e ON m.especialidadeID = e.id " +
+            "WHERE m.ativo = TRUE AND m.especialidadeID = :pIdEspecialidade ")
+    List<MedicoModel> BuscaMedicosAtivosPorEspecialidade(@Param("pIdEspecialidade") int pIdEspecialidade);
 
-    @Query("SELECT m FROM MedicoModel m WHERE m.id = :medicoId AND m.ativo = TRUE")
-    Optional<MedicoModel> buscarMedico(@Param("medicoId") Integer medicoId);
+    @Query("SELECT m FROM MedicoModel m WHERE m.id = :pMedicoId AND m.ativo = TRUE")
+    Optional<MedicoModel> buscarMedico(@Param("pMedicoId") Integer pMedicoId);
 
-    @Query("SELECT c FROM ConsultaModel c WHERE c.medicoID = :medicoId AND " +
-            "c.dataHoraConsulta = :data AND c.status != 'CANCELADA'")
+    @Query("SELECT c FROM ConsultaModel c WHERE c.medicoID = :pMedicoId AND " +
+            "c.dataHoraConsulta = :pData AND c.status != 'CANCELADA'")
     List<ConsultaModel> buscarConsultasPorMedicoEData(
-            @Param("medicoId") Integer medicoId,
-            @Param("data") LocalDateTime data);
+            @Param("pMedicoId") Integer medicoId,
+            @Param("pData") LocalDateTime pData);
 
     //-- (Caso 03) --
     @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.HistoricoPacienteOutputDTO(" +
@@ -73,26 +74,26 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
             "JOIN MedicoModel m ON m.id = c.medicoID " +
             "JOIN EspecialidadeModel e ON e.id = m.especialidadeID " +
             "WHERE p.ativo = true " +
-            "AND c.pacienteID = :pacienteID " +
-            "AND (:datInicio IS NULL OR c.dataHoraConsulta >= :datInicio) " +
-            "AND (:datFim IS NULL OR c.dataHoraConsulta <= :datFim) " +
-            "AND (:medicoID IS NULL OR c.medicoID = :medicoID) " +
-            "AND (:status IS NULL OR c.status = :status) " +
+            "AND c.pacienteID = :pPacienteID " +
+            "AND (:pDatInicio IS NULL OR c.dataHoraConsulta >= :pDatInicio) " +
+            "AND (:pDatFim IS NULL OR c.dataHoraConsulta <= :pDatFim) " +
+            "AND (:pMedicoID IS NULL OR c.medicoID = :pMedicoID) " +
+            "AND (:pStatus IS NULL OR c.status = :pStatus) " +
             "ORDER BY c.dataHoraConsulta DESC")
     List<HistoricoPacienteOutputDTO> ConsultasPaciente(
-            @Param("pacienteID") Integer pacienteID,
-            @Param("datInicio") LocalDateTime datInicio,
-            @Param("datFim") LocalDateTime datFim,
-            @Param("medicoID") Integer medicoID,
-            @Param("status") String status);
+            @Param("pPacienteID") Integer pPacienteID,
+            @Param("pDatInicio") LocalDateTime pDatInicio,
+            @Param("pDatFim") LocalDateTime pDatFim,
+            @Param("pMedicoID") Integer pMedicoID,
+            @Param("pStatus") String pStatus);
 
     //-- (Caso 04) --
 
-    @Query("SELECT c FROM ConsultaModel c WHERE c.medicoID = :medicoId AND " +
-            "CAST(c.dataHoraConsulta AS DATE) = CAST(:data AS DATE) AND c.status != 'CANCELADA'")
+    @Query("SELECT c FROM ConsultaModel c WHERE c.medicoID = :pMedicoId AND " +
+            "CAST(c.dataHoraConsulta AS DATE) = CAST(:pData AS DATE) AND c.status != 'CANCELADA'")
     List<ConsultaModel> buscarConsultasPorMedicoEData02(
-            @Param("medicoId") Integer medicoId,
-            @Param("data") LocalDateTime data);
+            @Param("pMedicoId") Integer pMedicoId,
+            @Param("pData") LocalDateTime pData);
 
 
 

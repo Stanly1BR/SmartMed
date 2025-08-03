@@ -35,7 +35,7 @@ public class RecepcionistaModel {
     private String cpf;
 
     @Column(name = "dataNascimento", nullable = false)
-    @NotNull(message = "O campo dataNAscimento não pode ser vazio")
+    @NotNull(message = "O campo dataNascimento não pode ser vazio")
     private LocalDate dataNascimento;
 
     @Column(name = "dataAdmissao", nullable = false)
