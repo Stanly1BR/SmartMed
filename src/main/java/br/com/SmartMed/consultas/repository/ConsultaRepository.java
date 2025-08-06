@@ -95,6 +95,10 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
             @Param("pMedicoId") Integer pMedicoId,
             @Param("pData") LocalDateTime pData);
 
+    // -- (Caso 06) --
+
+    @Query("SELECT c FROM ConsultaModel c WHERE c.id = :pId AND c.status = 'AGENDADA'")
+    Optional<ConsultaModel> buscarConsultasAgendadas(@Param("pId") Integer pId);
 
 
 

@@ -18,6 +18,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -211,6 +212,30 @@ public class ConsultaService {
         } catch (Exception e){
             throw new BusinessRuleException("Erro ao agendar consulta automatica: " + e.getMessage());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public CancelamentoConsultaOutputDTO CancelarConsulta(CancelamentoConsultaInputDTO input){
+        Optional<ConsultaModel> consulta = consultaRepository.buscarConsultasAgendadas(input.getConsultaID());
+
+        if(consulta.isEmpty()){
+            throw new ObjectNotFoundException("Não tem consultas agendadas para o ID informado");
+        }
+
+        ConsultaModel consultaAtual = consulta.get();
+
+        if( consultaAtual.getDataHoraConsulta().isBefore(LocalDateTime.now()) ){
+            throw new BusinessRuleException("Apenas consultas futuras podem ser canceladas");
+        }
+        consultaAtual.setStatus("CANCELADA");
+        consultaAtual.setObservacoes(input.getMotivo());
+
+
+
+        return new CancelamentoConsultaOutputDTO(
+                input.getMotivo(),
+                consultaAtual.getStatus().equals("CANCELADA")
+        );
     }
 
     private void validarDados(AgendamentoAutomaticoInputDTO input) {

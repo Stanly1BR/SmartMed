@@ -58,4 +58,10 @@ public class ConsultaController {
         List<HistoricoPacienteOutputDTO> historico = consultaService.buscarHistoricoDoPaciente(input);
         return ResponseEntity.ok(historico);
     }
+
+    @PostMapping("/cancelar")
+    public ResponseEntity<CancelamentoConsultaOutputDTO> cancelarConsultas(@Valid @RequestBody CancelamentoConsultaInputDTO input) {
+        CancelamentoConsultaOutputDTO cancelar = consultaService.CancelarConsulta(input);
+        return ResponseEntity.ok(cancelar);
+    }
 }
