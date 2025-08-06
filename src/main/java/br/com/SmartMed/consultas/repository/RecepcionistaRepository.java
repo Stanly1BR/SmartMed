@@ -3,6 +3,7 @@ package br.com.SmartMed.consultas.repository;
 import br.com.SmartMed.consultas.model.RecepcionistaModel;
 import br.com.SmartMed.consultas.rest.dto.HistoricoPacienteOutputDTO;
 import br.com.SmartMed.consultas.rest.dto.ListagemRecepcionistasOutputDTO;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,16 +24,14 @@ public interface RecepcionistaRepository extends JpaRepository<RecepcionistaMode
     Optional<RecepcionistaModel> findByCpf(String pCpf);
     Boolean existsByCpf(String pCpf);
 
-    @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.ListagemRecepcionistasOutputDTO " +
-            "(r.nome, r.cpf, r.email, r.dataAdmissao, r.ativo) " +
-            " FROM RecepcionistaModel r" +
-            " WHERE r.ativo = :pAtivo " +
-            " AND (:pDataInicio IS NULL OR r.dataAdmissao >= :pDataInicio) " +
-            " AND (:pDataFim IS NULL OR r.dataAdmissao <= :pDataFim)" +
-            " ORDER BY r.dataAdmissao")
-    List<ListagemRecepcionistasOutputDTO> ListagemRecepcionistas(@Param("pDataInicio")LocalDate pDataInicio,
-                                                                 @Param("pDataFim") LocalDate pDataFim,
-                                                                 @Param("pStatus") boolean pStatus,
-                                                                 Pageable pageable);
+    @Query("SELECT r FROM RecepcionistaModel r " +
+            "WHERE r.ativo = :pStatus " +
+            "AND (:pDataInicio IS NULL OR r.dataAdmissao >= :pDataInicio) " +
+            "AND (:pDataFim IS NULL OR r.dataAdmissao <= :pDataFim) " +
+            "ORDER BY r.dataAdmissao")
+    Page<RecepcionistaModel> listagemRecepcionistas(@Param("pDataInicio") LocalDate pDataInicio,
+                                                    @Param("pDataFim") LocalDate pDataFim,
+                                                    @Param("pStatus") boolean pStatus,
+                                                    Pageable pageable);
 
 }

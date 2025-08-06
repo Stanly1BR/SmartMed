@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ListagemRecepcionistasOutputDTO<T> {
-    private List<T> recepcionistas;
-    private int totalPagina;
-    private int pagina;
+    private List<T> conteudo;
+    private int totalPaginas;
+    private int paginaAtual;
 }

@@ -97,4 +97,5 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
 
 
 
+
 }

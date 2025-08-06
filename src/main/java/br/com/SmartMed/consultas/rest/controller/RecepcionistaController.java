@@ -1,6 +1,8 @@
 package br.com.SmartMed.consultas.rest.controller;
 
 import br.com.SmartMed.consultas.model.RecepcionistaModel;
+import br.com.SmartMed.consultas.rest.dto.ListagemRecepcionistasInputDTO;
+import br.com.SmartMed.consultas.rest.dto.ListagemRecepcionistasOutputDTO;
 import br.com.SmartMed.consultas.rest.dto.PacienteDTO;
 import br.com.SmartMed.consultas.rest.dto.RecepcionistaDTO;
 import br.com.SmartMed.consultas.service.RecepcionistaService;
@@ -46,5 +48,11 @@ public class RecepcionistaController {
     @DeleteMapping()
     public void deletar(@Valid @RequestBody RecepcionistaModel recepcionista){
         recepcionistaService.deletar(recepcionista);
+    }
+
+    @PostMapping("/filtrar")
+    public ResponseEntity<ListagemRecepcionistasOutputDTO> listarRecepcionistas(@Valid @RequestBody ListagemRecepcionistasInputDTO Input) {
+        ListagemRecepcionistasOutputDTO lista = recepcionistaService.listarRecepcionistas(Input);
+        return ResponseEntity.status(HttpStatus.OK).body(lista);
     }
 }

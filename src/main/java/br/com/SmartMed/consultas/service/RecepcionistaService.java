@@ -3,9 +3,14 @@ package br.com.SmartMed.consultas.service;
 import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.RecepcionistaModel;
 import br.com.SmartMed.consultas.repository.RecepcionistaRepository;
+import br.com.SmartMed.consultas.rest.dto.ListagemRecepcionistasInputDTO;
+import br.com.SmartMed.consultas.rest.dto.ListagemRecepcionistasOutputDTO;
 import br.com.SmartMed.consultas.rest.dto.RecepcionistaDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,5 +117,26 @@ public class RecepcionistaService {
         } catch (ObjectNotFoundException e) {
             throw new ObjectNotFoundException("Erro! Não foi possível deletar o recepcionista" + recepcionista.getNome() + ". Não encontrado no banco de dados!");
         }
+    }
+    public ListagemRecepcionistasOutputDTO<RecepcionistaDTO> listarRecepcionistas(ListagemRecepcionistasInputDTO Input) {
+        Pageable pageable = PageRequest.of(Input.getPagina(), Input.getTamanhoPagina());
+
+        Page<RecepcionistaModel> recepcionistasPage = recepcionistaRepository.listagemRecepcionistas(
+                Input.getDataInicio(),
+                Input.getDataFim(),
+                Input.isStatus(),
+                pageable
+        );
+
+        List<RecepcionistaDTO> conteudo = recepcionistasPage.getContent()
+                .stream()
+                .map(recepcionista -> modelMapper.map(recepcionista, RecepcionistaDTO.class))
+                .collect(Collectors.toList());
+
+        return new ListagemRecepcionistasOutputDTO<>(
+                conteudo,
+                recepcionistasPage.getTotalPages(),
+                recepcionistasPage.getNumber()
+        );
     }
 }
