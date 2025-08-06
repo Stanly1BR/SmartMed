@@ -2,6 +2,8 @@ package br.com.SmartMed.consultas.rest.controller;
 
 import br.com.SmartMed.consultas.model.EspecialidadeModel;
 import br.com.SmartMed.consultas.rest.dto.EspecialidadeDTO;
+import br.com.SmartMed.consultas.rest.dto.RelatorioDeEspecialidadesInputDTO;
+import br.com.SmartMed.consultas.rest.dto.RelatorioDeEspecialidadesOutputDTO;
 import br.com.SmartMed.consultas.service.EspecialidadeService;
 import jakarta.validation.Valid;
 import org.apache.coyote.Response;
@@ -46,5 +48,13 @@ public class EspecialidadeController {
     @DeleteMapping()
     public void deletar(@Valid @RequestBody EspecialidadeModel especialidade){
         especialidadeService.deletar(especialidade);
+    }
+
+    @PostMapping("/especialidades-frequentes")
+    public ResponseEntity<List<RelatorioDeEspecialidadesOutputDTO>> getRelatorioEspecialidades(
+            @Valid @RequestBody RelatorioDeEspecialidadesInputDTO input) {
+
+        List<RelatorioDeEspecialidadesOutputDTO> relatorio = especialidadeService.RelatorioEspecialidade(input);
+        return ResponseEntity.status(HttpStatus.OK).body(relatorio);
     }
 }

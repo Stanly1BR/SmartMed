@@ -4,6 +4,8 @@ import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.EspecialidadeModel;
 import br.com.SmartMed.consultas.repository.EspecialidadeRepository;
 import br.com.SmartMed.consultas.rest.dto.EspecialidadeDTO;
+import br.com.SmartMed.consultas.rest.dto.RelatorioDeEspecialidadesInputDTO;
+import br.com.SmartMed.consultas.rest.dto.RelatorioDeEspecialidadesOutputDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -106,5 +108,15 @@ public class EspecialidadeService {
         } catch (ObjectNotFoundException e) {
             throw new ObjectNotFoundException("Erro ao delete a especialidade " + especialidade.getId() + "Não encontrado no bando de dados");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<RelatorioDeEspecialidadesOutputDTO> RelatorioEspecialidade(RelatorioDeEspecialidadesInputDTO input){
+
+        if (input.getDataInicio().isAfter(input.getDataFim())) {
+            throw new BusinessRuleException("A data de início não pode ser posterior à data de fim.");
+        }
+
+        return especialidadeRepository.buscarRelatorioEspecialidadesMaisAtendidas(input.getDataInicio(), input.getDataFim());
     }
 }

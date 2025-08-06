@@ -214,7 +214,7 @@ public class ConsultaService {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public CancelamentoConsultaOutputDTO CancelarConsulta(CancelamentoConsultaInputDTO input){
         Optional<ConsultaModel> consulta = consultaRepository.buscarConsultasAgendadas(input.getConsultaID());
 
