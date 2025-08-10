@@ -246,13 +246,13 @@ public class ConsultaService {
             throw new ObjectNotFoundException("Consulta não existente no banco de dados");
         }
 
-        if (consulta.get().getDataHoraConsulta().isBefore(LocalDateTime.now())){
+        if (input.getNovaDataHora().isBefore(LocalDateTime.now())){
             throw new BusinessRuleException("Apenas consultas futuras podem ser reagendadas");
         }
 
         ConsultaModel consultaAtual = consulta.get();
 
-        if (!consultaAtual.getDataHoraConsulta().isBefore(input.getNovaDataHora())){
+        if (consultaAtual.getDataHoraConsulta().isEqual(input.getNovaDataHora())){
             throw new BusinessRuleException("A data do reagendamento não pode ser a mesma da que esta sendo reagendada");
         }
 
