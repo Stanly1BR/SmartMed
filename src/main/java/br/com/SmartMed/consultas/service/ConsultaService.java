@@ -238,6 +238,39 @@ public class ConsultaService {
         );
     }
 
+    @Transactional
+    public ReagendarConsultaOutputDTO reagendarConsulta(ReagendarConsultaInputDTO input){
+        Optional<ConsultaModel> consulta = consultaRepository.buscarConsultaAgendada(input.getConsultaID());
+
+        if (consulta.isEmpty()){
+            throw new ObjectNotFoundException("Consulta não existente no banco de dados");
+        }
+
+        if (consulta.get().getDataHoraConsulta().isBefore(LocalDateTime.now())){
+            throw new BusinessRuleException("Apenas consultas futuras podem ser reagendadas");
+        }
+
+        ConsultaModel consultaAtual = consulta.get();
+
+        if (!consultaAtual.getDataHoraConsulta().isBefore(input.getNovaDataHora())){
+            throw new BusinessRuleException("A data do reagendamento não pode ser a mesma da que esta sendo reagendada");
+        }
+
+        List<ConsultaModel> Conflito = consultaRepository.buscarConsultasPorMedicoEData(consultaAtual.getMedicoID(), input.getNovaDataHora());
+
+        if (!Conflito.isEmpty()){
+            throw new SQLException("Já existe uma consulta agendada para o médico neste horário.");
+        }
+
+        consultaAtual.setDataHoraConsulta(input.getNovaDataHora());
+        consultaAtual.setObservacoes(input.getMotivo());
+
+        return new ReagendarConsultaOutputDTO(
+                input.getMotivo(),
+                input.getNovaDataHora()
+        );
+    }
+
     private void validarDados(AgendamentoAutomaticoInputDTO input) {
         if (input.getDataHoraInicial() == null){
             throw new BusinessRuleException("Data/hora inicial é obrigatória");

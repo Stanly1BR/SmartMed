@@ -64,4 +64,10 @@ public class ConsultaController {
         CancelamentoConsultaOutputDTO cancelar = consultaService.CancelarConsulta(input);
         return ResponseEntity.ok(cancelar);
     }
+
+    @PutMapping("/reagendar")
+    public ResponseEntity<ReagendarConsultaOutputDTO> reagendarConsulta(@Valid @RequestBody ReagendarConsultaInputDTO input) {
+        ReagendarConsultaOutputDTO reagendar = consultaService.reagendarConsulta(input);
+        return ResponseEntity.ok(reagendar);
+    }
 }

@@ -53,7 +53,6 @@ public class EspecialidadeController {
     @PostMapping("/especialidades-frequentes")
     public ResponseEntity<List<RelatorioDeEspecialidadesOutputDTO>> getRelatorioEspecialidades(
             @Valid @RequestBody RelatorioDeEspecialidadesInputDTO input) {
-
         List<RelatorioDeEspecialidadesOutputDTO> relatorio = especialidadeService.RelatorioEspecialidade(input);
         return ResponseEntity.status(HttpStatus.OK).body(relatorio);
     }
