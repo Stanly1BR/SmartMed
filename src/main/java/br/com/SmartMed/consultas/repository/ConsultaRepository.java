@@ -2,9 +2,9 @@ package br.com.SmartMed.consultas.repository;
 
 import br.com.SmartMed.consultas.model.ConsultaModel;
 import br.com.SmartMed.consultas.model.MedicoModel;
-import br.com.SmartMed.consultas.rest.dto.HistoricoPacienteOutputDTO;
-import br.com.SmartMed.consultas.rest.dto.RelatorioCovenioDTO;
-import br.com.SmartMed.consultas.rest.dto.RelatorioFormaPagamentoDTO;
+import br.com.SmartMed.consultas.rest.dto.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -104,5 +104,14 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
     @Query("SELECT c FROM ConsultaModel  c WHERE c.id = :pId AND c.status = 'AGENDADA'")
     Optional<ConsultaModel> buscarConsultaAgendada(@Param("pId") Integer pId);
 
+    // -- (Caso 09) --
+    @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.RankMedicoAtendimentoDetalhesDTO(m.nome, COUNT(c.id)) " +
+            "FROM ConsultaModel c JOIN MedicoModel m ON c.medicoID = m.id " +
+            "WHERE c.status = 'REALIZADA' AND FUNCTION('MONTH', c.dataHoraConsulta) = :pMes AND FUNCTION('YEAR', c.dataHoraConsulta) = :pAno " +
+            "GROUP BY m.nome " +
+            "ORDER BY COUNT(c.id) DESC")
+    Page<RankMedicoAtendimentoDetalhesDTO> buscarRankMedicosPorAtendimentos(@Param("pMes") int mes,
+                                                                            @Param("pAno") int ano,
+                                                                            Pageable pageable);
 
 }

@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RankMedicoAtendimentoInputDTO {
-    private int mes;
-    private int ano;
-    private int pagina;
-    private int tamanhoPagina;
+public class RankMedicoAtendimentoDetalhesDTO {
+    private String nome;
+    private Long quantidadeConsultas;
 }
