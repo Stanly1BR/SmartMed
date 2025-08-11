@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,31 +44,18 @@ public class RelatorioService {
     }
 
     @Transactional(readOnly = true)
-    public RankMedicoAtendimentoOutputDTO<RankMedicoAtendimentoDetalhesDTO> gerarRankMedicoPorAtendimentos(RankMedicoAtendimentoInputDTO input){
+    public Page<RankMedicoAtendimentoOutputDTO> gerarRankMedicoPorAtendimentos(RankMedicoAtendimentoInputDTO input){
 
-        if (input.getPagina() < 0 || input.getTamanhoPagina() < 0) {
-            throw new IllegalArgumentException("O número da página não pode ser negativo.");
+        if (input.getPagina() < 0 || input.getTamanhoPagina() <= 0) {
+            throw new IllegalArgumentException("O número da página não pode ser negativo e o tamanho da página deve ser maior que zero.");
         }
 
         YearMonth yearMonth = YearMonth.of(input.getAno(), input.getMes());
-
         LocalDateTime dataInicio = yearMonth.atDay(1).atStartOfDay();
         LocalDateTime dataFim = yearMonth.atEndOfMonth().atTime(23, 59, 59);
 
         Pageable pageable = PageRequest.of(input.getPagina(), input.getTamanhoPagina());
 
-        Page<RankMedicoAtendimentoDetalhesDTO> rank = consultaRepository.buscarRankMedicosPorAtendimentos(
-                input.getMes(),
-                input.getAno(),
-                pageable);
-
-
-        RankMedicoAtendimentoOutputDTO<RankMedicoAtendimentoDetalhesDTO> outputDTO = new RankMedicoAtendimentoOutputDTO<>();
-        outputDTO.setConteudo(rank.getContent());
-        outputDTO.setPaginaAtual(rank.getNumber() + 1);
-        outputDTO.setTotalPaginas(rank.getTotalPages());
-
-
-        return outputDTO;
+        return consultaRepository.buscarRankMedicosPorAtendimentosComDatas(dataInicio, dataFim, pageable);
     }
 }

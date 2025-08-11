@@ -1,9 +1,8 @@
 package br.com.SmartMed.consultas.rest.controller;
 
 import br.com.SmartMed.consultas.repository.ConsultaRepository;
-import br.com.SmartMed.consultas.rest.dto.RankMedicoAtendimentoDetalhesDTO;
-import br.com.SmartMed.consultas.rest.dto.RankMedicoAtendimentoInputDTO;
 import br.com.SmartMed.consultas.rest.dto.RankMedicoAtendimentoOutputDTO;
+import br.com.SmartMed.consultas.rest.dto.RankMedicoAtendimentoInputDTO;
 import br.com.SmartMed.consultas.rest.dto.RelatorioDTO;
 import br.com.SmartMed.consultas.service.RelatorioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -36,9 +34,9 @@ public class RelatorioController {
 
     // Link: http://localhost:8080/api/relatorio/medicos-mais-ativos
     @PostMapping("/medicos-mais-ativos")
-    public ResponseEntity<RankMedicoAtendimentoOutputDTO<RankMedicoAtendimentoDetalhesDTO>> obterMedicosMaisAtivos(
+    public ResponseEntity<Page<RankMedicoAtendimentoOutputDTO>> obterMedicosMaisAtivos(
             @RequestBody RankMedicoAtendimentoInputDTO input) {
-        RankMedicoAtendimentoOutputDTO<RankMedicoAtendimentoDetalhesDTO> rank = relatorioService.gerarRankMedicoPorAtendimentos(input);
+        Page<RankMedicoAtendimentoOutputDTO> rank = relatorioService.gerarRankMedicoPorAtendimentos(input);
         return ResponseEntity.ok(rank);
     }
 }

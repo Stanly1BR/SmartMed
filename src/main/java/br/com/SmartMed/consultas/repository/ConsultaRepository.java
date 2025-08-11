@@ -11,9 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,14 +104,15 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
     Optional<ConsultaModel> buscarConsultaAgendada(@Param("pId") Integer pId);
 
     // -- (Caso 09) --
-    @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.RankMedicoAtendimentoDetalhesDTO(m.nome, COUNT(c.id)) " +
+    @Query("SELECT NEW br.com.SmartMed.consultas.rest.dto.RankMedicoAtendimentoOutputDTO(m.nome, COUNT(c.id)) " +
             "FROM ConsultaModel c JOIN MedicoModel m ON c.medicoID = m.id " +
-            "WHERE c.status = 'REALIZADA' AND FUNCTION('MONTH', c.dataHoraConsulta) = :pMes AND FUNCTION('YEAR', c.dataHoraConsulta) = :pAno " +
+            "WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :pDataInicio AND :pDataFim " +
             "GROUP BY m.nome " +
             "ORDER BY COUNT(c.id) DESC")
-    Page<RankMedicoAtendimentoDetalhesDTO> buscarRankMedicosPorAtendimentos(@Param("pMes") int mes,
-                                                                            @Param("pAno") int ano,
-                                                                            Pageable pageable);
+    Page<RankMedicoAtendimentoOutputDTO> buscarRankMedicosPorAtendimentosComDatas(
+            @Param("pDataInicio") LocalDateTime pDataInicio,
+            @Param("pDataFim") LocalDateTime pDataFim,
+            Pageable pageable);
 
     // -- (Caso 10) --
     @Query("SELECT r FROM RecepcionistaModel r WHERE r.ativo = TRUE AND r.id = :pId")
