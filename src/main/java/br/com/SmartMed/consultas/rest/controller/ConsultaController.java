@@ -65,6 +65,12 @@ public class ConsultaController {
         return ResponseEntity.ok(cancelar);
     }
 
+    @PostMapping("/cadastrar")
+    public ResponseEntity<CadastroConsultaComValidacaoOutputDTO> cadastroConsultaComValidacao (@Valid @RequestBody CadastroConsultaComValidacaoInputDTO input){
+        CadastroConsultaComValidacaoOutputDTO consulta = consultaService.CadastroConsultaComValidacao(input);
+        return ResponseEntity.ok(consulta);
+    }
+
     @PutMapping("/reagendar")
     public ResponseEntity<ReagendarConsultaOutputDTO> reagendarConsulta(@Valid @RequestBody ReagendarConsultaInputDTO input) {
         ReagendarConsultaOutputDTO reagendar = consultaService.reagendarConsulta(input);

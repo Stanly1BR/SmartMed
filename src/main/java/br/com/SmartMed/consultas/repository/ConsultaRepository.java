@@ -2,6 +2,7 @@ package br.com.SmartMed.consultas.repository;
 
 import br.com.SmartMed.consultas.model.ConsultaModel;
 import br.com.SmartMed.consultas.model.MedicoModel;
+import br.com.SmartMed.consultas.model.RecepcionistaModel;
 import br.com.SmartMed.consultas.rest.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -113,5 +114,9 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
     Page<RankMedicoAtendimentoDetalhesDTO> buscarRankMedicosPorAtendimentos(@Param("pMes") int mes,
                                                                             @Param("pAno") int ano,
                                                                             Pageable pageable);
+
+    // -- (Caso 10) --
+    @Query("SELECT r FROM RecepcionistaModel r WHERE r.ativo = TRUE AND r.id = :pId")
+    Optional<RecepcionistaModel> buscarRecepcionista(@Param("pId") Integer pId);
 
 }

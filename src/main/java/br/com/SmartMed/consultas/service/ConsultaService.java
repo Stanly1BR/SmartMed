@@ -4,6 +4,7 @@ import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.ConsultaModel;
 import br.com.SmartMed.consultas.model.MedicoModel;
 import br.com.SmartMed.consultas.model.PacienteModel;
+import br.com.SmartMed.consultas.model.RecepcionistaModel;
 import br.com.SmartMed.consultas.repository.ConsultaRepository;
 import br.com.SmartMed.consultas.repository.PacienteRepository;
 import br.com.SmartMed.consultas.rest.dto.*;
@@ -268,6 +269,28 @@ public class ConsultaService {
         return new ReagendarConsultaOutputDTO(
                 input.getMotivo(),
                 input.getNovaDataHora()
+        );
+    }
+
+    @Transactional
+    public CadastroConsultaComValidacaoOutputDTO CadastroConsultaComValidacao (CadastroConsultaComValidacaoInputDTO input){
+        RecepcionistaModel recepcionista = consultaRepository.buscarRecepcionista(input.getRecepcionistaID()).orElseThrow(()-> new ObjectNotFoundException("Recepcionista não constar no banco de dados."));
+
+        ConsultaModel consulta = new ConsultaModel();
+        consulta.setDataHoraConsulta(input.getDataHora());
+        consulta.setPacienteID(input.getPacienteID());
+        consulta.setMedicoID(input.getMedicoID());
+        consulta.setStatus("AGENDADA");
+        consulta.setCovenioID(input.getCovenioID());
+        consulta.setFormaPagamentoID(input.getFormaPagamentoID());
+        consulta.setDuracaoMinutos(LocalTime.of(0, 30));
+        consulta.setObservacoes("Consulta agendada pelo recepcionista " + recepcionista.getNome());
+
+        consultaRepository.save(consulta);
+
+        return new CadastroConsultaComValidacaoOutputDTO(
+                "Consulta Agendada com Sucesso pelo recepcionista " + recepcionista.getNome() + "ID consulta: " + consulta.getId(),
+                consulta.getStatus()
         );
     }
 
