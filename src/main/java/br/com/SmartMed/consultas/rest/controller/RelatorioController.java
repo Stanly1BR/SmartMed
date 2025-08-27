@@ -39,4 +39,8 @@ public class RelatorioController {
         Page<RankMedicoAtendimentoOutputDTO> rank = relatorioService.gerarRankMedicoPorAtendimentos(input);
         return ResponseEntity.ok(rank);
     }
+
+    /*
+        return ResponseEntity.status(HttpStatus.OK).body(rank);
+    }*/
 }

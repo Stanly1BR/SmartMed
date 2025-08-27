@@ -118,4 +118,16 @@ public interface ConsultaRepository extends JpaRepository<ConsultaModel, Integer
     @Query("SELECT r FROM RecepcionistaModel r WHERE r.ativo = TRUE AND r.id = :pId")
     Optional<RecepcionistaModel> buscarRecepcionista(@Param("pId") Integer pId);
 
+    /*teste @Query(value = "SELECT NEW br.com.smartmed.consultas.rest.dto.RankingMedicosAtendimentosResponseDTO(m.nome, COUNT(c.id)) " +
+            "FROM ConsultaModel c " +
+            "JOIN MedicoModel m ON c.medicoID = m.id " +
+            "WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :dataInicio AND :dataFim " +
+            "GROUP BY m.nome " +
+            "ORDER BY COUNT(c.id) DESC",
+            countQuery = "SELECT COUNT(DISTINCT m.nome) FROM ConsultaModel c JOIN MedicoModel m ON c.medicoID = m.id WHERE c.status = 'REALIZADA' AND c.dataHoraConsulta BETWEEN :dataInicio AND :dataFim")
+    Page<RankingMedicosAtendimentosResponseDTO> RankMedicos(
+            @Param("dataInicio") LocalDateTime dataInicio,
+            @Param("dataFim") LocalDateTime dataFim,
+            Pageable pageable);*/
+
 }
