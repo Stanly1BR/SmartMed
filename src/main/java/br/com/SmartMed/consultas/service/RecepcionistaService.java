@@ -125,7 +125,7 @@ public class RecepcionistaService {
     public ListagemRecepcionistasOutputDTO<RecepcionistaDTO> listarRecepcionistas(ListagemRecepcionistasInputDTO input) {
         boolean ativo = parseStatus(input.getStatus());
 
-        Sort sort = buildSort(input.getOrdenarPor(), input.getDirecao());
+        Sort sort = buildSort(input.getOrdenarPordataAdmissao(), input.getDirecao());
         Pageable pageable = PageRequest.of(
                 Math.max(0, input.getPagina()),
                 Math.max(1, input.getTamanhoPagina()),
@@ -153,12 +153,12 @@ public class RecepcionistaService {
     }
 
     private boolean parseStatus(String status) {
-        if (status == null) return true; // padrão ATIVO
+        if (status == null) return true;
         String s = status.trim().toUpperCase(Locale.ROOT);
         return switch (s) {
             case "ATIVO", "TRUE", "1", "SIM" -> true;
             case "INATIVO", "FALSE", "0", "NAO", "NÃO" -> false;
-            default -> true; // fallback para ATIVO
+            default -> true;
         };
     }
 

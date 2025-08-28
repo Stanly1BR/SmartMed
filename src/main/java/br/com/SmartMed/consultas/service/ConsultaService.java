@@ -363,27 +363,6 @@ public class ConsultaService {
                 .map(PacienteModel::getNome)
                 .orElse("Paciente não encontrado");
     }
-
-    /*teste @Transactional(readOnly = true)
-    public PageResponseDTO<RankingMedicosAtendimentosResponseDTO> RankMedicos(RankingMedicosRequestDTO request) {
-
-        LocalDate dataInicioMes = LocalDate.of(request.getAno(), request.getMes(), 1);
-        LocalDate dataFimMes = dataInicioMes.withDayOfMonth(dataInicioMes.lengthOfMonth());
-
-        LocalDateTime inicioDoPeriodo = dataInicioMes.atStartOfDay();
-        LocalDateTime fimDoPeriodo = dataFimMes.atTime(LocalTime.MAX);
-
-        Pageable pageable = PageRequest.of(request.getPagina(), request.getTamanhoPagina());
-
-        Page<RankingMedicosAtendimentosResponseDTO> rank = consultaRepository.findRankingMedicos(inicioDoPeriodo, fimDoPeriodo, pageable);
-
-        return new PageResponseDTO<>(
-                rankingPage.getContent(),
-                rankingPage.getTotalPages(),
-                rankingPage.getTotalElements(),
-                rankingPage.getNumber(),
-                rankingPage.getSize()
-        );*/
 }
 
 

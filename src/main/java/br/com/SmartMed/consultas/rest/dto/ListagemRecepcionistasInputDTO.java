@@ -17,7 +17,7 @@ public class ListagemRecepcionistasInputDTO {
     private LocalDate dataFim;
     private int pagina = 0;
     private int tamanhoPagina = 10;
-    private String ordenarPor = "dataAdmissao";
-    private String direcao = "ASC";
+    private String ordenarPordataAdmissao;
+    private String direcao;
 
 }
