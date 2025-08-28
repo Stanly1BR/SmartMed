@@ -3,18 +3,20 @@ package br.com.SmartMed.consultas.service;
 import br.com.SmartMed.consultas.exception.*;
 import br.com.SmartMed.consultas.model.RecepcionistaModel;
 import br.com.SmartMed.consultas.repository.RecepcionistaRepository;
-import br.com.SmartMed.consultas.rest.dto.ListagemRecepcionistasInputDTO;
 import br.com.SmartMed.consultas.rest.dto.ListagemRecepcionistasOutputDTO;
+import br.com.SmartMed.consultas.rest.dto.ListagemRecepcionistasInputDTO;
 import br.com.SmartMed.consultas.rest.dto.RecepcionistaDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,25 +120,73 @@ public class RecepcionistaService {
             throw new ObjectNotFoundException("Erro! Não foi possível deletar o recepcionista" + recepcionista.getNome() + ". Não encontrado no banco de dados!");
         }
     }
-    public ListagemRecepcionistasOutputDTO<RecepcionistaDTO> listarRecepcionistas(ListagemRecepcionistasInputDTO Input) {
-        Pageable pageable = PageRequest.of(Input.getPagina(), Input.getTamanhoPagina());
 
-        Page<RecepcionistaModel> recepcionistasPage = recepcionistaRepository.listagemRecepcionistas(
-                Input.getDataInicio(),
-                Input.getDataFim(),
-                Input.isStatus(),
+    @Transactional(readOnly = true)
+    public ListagemRecepcionistasOutputDTO<RecepcionistaDTO> listarRecepcionistas(ListagemRecepcionistasInputDTO input) {
+        boolean ativo = parseStatus(input.getStatus());
+
+        Sort sort = buildSort(input.getOrdenarPor(), input.getDirecao());
+        Pageable pageable = PageRequest.of(
+                Math.max(0, input.getPagina()),
+                Math.max(1, input.getTamanhoPagina()),
+                sort
+        );
+
+        Page<RecepcionistaModel> page = recepcionistaRepository.listagemRecepcionistas(
+                input.getDataInicio(),
+                input.getDataFim(),
+                ativo,
                 pageable
         );
 
-        List<RecepcionistaDTO> conteudo = recepcionistasPage.getContent()
-                .stream()
-                .map(recepcionista -> modelMapper.map(recepcionista, RecepcionistaDTO.class))
-                .collect(Collectors.toList());
+        List<RecepcionistaDTO> conteudo = page.getContent().stream()
+                .map(this::toDto)
+                .toList();
 
         return new ListagemRecepcionistasOutputDTO<>(
                 conteudo,
-                recepcionistasPage.getTotalPages(),
-                recepcionistasPage.getNumber()
+                page.getTotalPages(),
+                page.getTotalElements(),
+                page.getNumber(),
+                page.getSize()
         );
+    }
+
+    private boolean parseStatus(String status) {
+        if (status == null) return true; // padrão ATIVO
+        String s = status.trim().toUpperCase(Locale.ROOT);
+        return switch (s) {
+            case "ATIVO", "TRUE", "1", "SIM" -> true;
+            case "INATIVO", "FALSE", "0", "NAO", "NÃO" -> false;
+            default -> true; // fallback para ATIVO
+        };
+    }
+
+    private Sort buildSort(String ordenarPor, String direcao) {
+        String property = mapOrdenarPorToEntityProperty(ordenarPor);
+        Sort.Direction dir = "DESC".equalsIgnoreCase(direcao) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        return Sort.by(dir, property);
+    }
+
+    private String mapOrdenarPorToEntityProperty(String ordenarPor) {
+        if (ordenarPor == null) return "dataAdmissao";
+        String p = ordenarPor.trim().toLowerCase(Locale.ROOT);
+        return switch (p) {
+            case "nome" -> "nome";
+            case "dataadmissao", "data_admissao" -> "dataAdmissao";
+            case "email" -> "email";
+            case "cpf" -> "cpf";
+            default -> "dataAdmissao";
+        };
+    }
+
+    private RecepcionistaDTO toDto(RecepcionistaModel m) {
+        RecepcionistaDTO dto = new RecepcionistaDTO();
+        dto.setNome(m.getNome());
+        dto.setCpf(m.getCpf());
+        dto.setEmail(m.getEmail());
+        dto.setDataAdmissao(m.getDataAdmissao());
+        dto.setAtivo(m.isAtivo());
+        return dto;
     }
 }

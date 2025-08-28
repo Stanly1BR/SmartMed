@@ -1,8 +1,6 @@
 package br.com.SmartMed.consultas.repository;
 
 import br.com.SmartMed.consultas.model.RecepcionistaModel;
-import br.com.SmartMed.consultas.rest.dto.HistoricoPacienteOutputDTO;
-import br.com.SmartMed.consultas.rest.dto.ListagemRecepcionistasOutputDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,11 +24,11 @@ public interface RecepcionistaRepository extends JpaRepository<RecepcionistaMode
     @Query("SELECT r FROM RecepcionistaModel r " +
             "WHERE r.ativo = :pStatus " +
             "AND (:pDataInicio IS NULL OR r.dataAdmissao >= :pDataInicio) " +
-            "AND (:pDataFim IS NULL OR r.dataAdmissao <= :pDataFim) " +
-            "ORDER BY r.dataAdmissao")
+            "AND (:pDataFim IS NULL OR r.dataAdmissao <= :pDataFim)")
     Page<RecepcionistaModel> listagemRecepcionistas(@Param("pDataInicio") LocalDate pDataInicio,
                                                     @Param("pDataFim") LocalDate pDataFim,
                                                     @Param("pStatus") boolean pStatus,
                                                     Pageable pageable);
+
 
 }

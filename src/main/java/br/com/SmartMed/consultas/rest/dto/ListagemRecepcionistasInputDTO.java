@@ -11,9 +11,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ListagemRecepcionistasInputDTO {
-    private boolean status;
+
+    private String status;
     private LocalDate dataInicio;
     private LocalDate dataFim;
-    private int pagina;
-    private int tamanhoPagina;
+    private int pagina = 0;
+    private int tamanhoPagina = 10;
+    private String ordenarPor = "dataAdmissao";
+    private String direcao = "ASC";
+
 }
