@@ -1,4 +1,4 @@
-# SyncPlayers
+# SmartMed
 
 ## 💡 Descrição Geral
 SmartMed é uma plataforma para agendamento de consultas médicas online e pagamentos online. O projeto foi idealizado para facilitar o agendamento de consultas e melhorar a experiência do usuário com uma interface intuitiva.
