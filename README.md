@@ -15,7 +15,7 @@ Principais módulos/funções definidos para o projeto:
 
 ## 📁 Estrutura dos Arquivos
 - [Requisitos](/modelos/requisitos.md): Lista de requisitos funcionais e não funcionais.
-- [Modelos](./modelos/readme.md): Diagramas UML utilizados (caso de uso, atividades, classes, estados).
+- [Modelos](./modelos): Diagramas UML utilizados (caso de uso, atividades, classes, estados).
 - ### [Protótipo](https://www.figma.com/proto/h8VFUi8hocIFXM1is8lkOW/Sem-título?node-id=1-15&p=f&t=0ic4ERhjJ7p2CwWK-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A15): Prototipagem funcional via Figma.
 -  ### [Algoritmo do Projeto](https://github.com/Stanly1BR/ProjetoSmartMed): Repositório no GitHub
 
