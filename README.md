@@ -34,3 +34,4 @@ Principais módulos/funções definidos para o projeto:
 
 ## 👥 Integrantes
 - :octocat: [Stanly Almeida do Carmo](https://github.com/Stanly1BR/)
+- :octocat: [José Anderson de Almeida Silva](https://github.com/andersonsillva1/)
